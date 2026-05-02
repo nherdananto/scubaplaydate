@@ -174,8 +174,11 @@ const Home = () => {
                   rel="noopener noreferrer"
                   onClick={() => handleBannerClick(banner.id)}
                   data-testid={`banner-${banner.id}`}
-                  className="block mt-8 relative overflow-hidden rounded-sm"
+                  className="block mt-8 relative overflow-hidden rounded-sm border-2 border-[#0284C7]"
                 >
+                  <div className="absolute top-2 right-2 text-xs font-semibold text-white bg-[#0284C7] px-2 py-1 rounded-sm z-10">
+                    Sidebar Banner
+                  </div>
                   <img
                     src={banner.image_url}
                     alt={banner.name}
@@ -183,9 +186,21 @@ const Home = () => {
                   />
                 </a>
               ))}
+              
+              {banners.filter(b => b.position === 'sidebar').length === 0 && (
+                <div className="mt-8 bg-[#F8FAFC] border-2 border-dashed border-[#0284C7] p-8 rounded-sm text-center">
+                  <div className="text-xs font-semibold text-[#0284C7] mb-2">Sidebar Banner Placement</div>
+                  <p className="text-sm text-[#64748B]">No banner configured</p>
+                  <p className="text-xs text-[#94A3B8] mt-1">Add in CMS → Banners</p>
+                </div>
+              )}
 
-              <div className="mt-8 bg-[#F1F5F9] p-8 rounded-sm text-center" data-testid="adsense-placeholder">
-                <p className="text-sm text-[#94A3B8] font-medium">Advertisement</p>
+              <div className="mt-8 bg-[#F1F5F9] p-8 rounded-sm text-center relative" data-testid="adsense-placeholder">
+                <div className="absolute top-2 right-2 text-xs font-semibold text-[#64748B] bg-white px-2 py-1 rounded-sm border border-[#E2E8F0]">
+                  Google AdSense
+                </div>
+                <p className="text-sm text-[#94A3B8] font-medium mt-4">Advertisement Space</p>
+                <p className="text-xs text-[#CBD5E1] mt-1">Configure in CMS → Settings</p>
               </div>
             </div>
           </div>
@@ -199,8 +214,11 @@ const Home = () => {
               rel="noopener noreferrer"
               onClick={() => handleBannerClick(banner.id)}
               data-testid={`bottom-banner-${banner.id}`}
-              className="block relative overflow-hidden rounded-sm"
+              className="block relative overflow-hidden rounded-sm border-2 border-[#F26419]"
             >
+              <div className="absolute top-4 right-4 text-xs font-semibold text-white bg-[#F26419] px-3 py-1 rounded-sm z-10">
+                Bottom Banner
+              </div>
               <img
                 src={banner.image_url}
                 alt={banner.name}
@@ -209,6 +227,16 @@ const Home = () => {
             </a>
           </section>
         ))}
+        
+        {banners.filter(b => b.position === 'bottom').length === 0 && (
+          <section className="px-6 md:px-12 lg:px-24 py-8">
+            <div className="bg-[#FFF4ED] border-2 border-dashed border-[#F26419] p-12 rounded-sm text-center">
+              <div className="text-sm font-semibold text-[#F26419] mb-2">Bottom Banner Placement (Full Width)</div>
+              <p className="text-sm text-[#64748B]">No banner configured</p>
+              <p className="text-xs text-[#94A3B8] mt-1">Add in CMS → Banners → Position: Bottom</p>
+            </div>
+          </section>
+        )}
       </div>
 
       <Footer />

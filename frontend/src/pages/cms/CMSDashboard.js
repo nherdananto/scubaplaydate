@@ -1,17 +1,33 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Newspaper, Users, Image, Gear, SignOut } from '@phosphor-icons/react';
 import { Button } from '../../components/ui/button';
+import { settingsAPI } from '../../utils/api';
+
+const DEFAULT_LOGO = 'https://customer-assets.emergentagent.com/job_e052bca8-dbf8-4933-8039-fac54198bda4/artifacts/kazh3wbj_243CB557-2CF0-4CAF-8C04-44D9C97272E7_1_105_c.jpeg';
 
 const CMSDashboard = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const [logoUrl, setLogoUrl] = useState(DEFAULT_LOGO);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
       navigate('/forinternalonly');
     }
+    
+    const fetchLogo = async () => {
+      try {
+        const response = await settingsAPI.get();
+        if (response.data.logo_url) {
+          setLogoUrl(response.data.logo_url);
+        }
+      } catch (error) {
+        console.log('Using default logo');
+      }
+    };
+    fetchLogo();
   }, [navigate]);
 
   const handleLogout = () => {
@@ -33,9 +49,10 @@ const CMSDashboard = () => {
         <div className="px-6 md:px-12 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img
-              src="https://customer-assets.emergentagent.com/job_e052bca8-dbf8-4933-8039-fac54198bda4/artifacts/kazh3wbj_243CB557-2CF0-4CAF-8C04-44D9C97272E7_1_105_c.jpeg"
+              src={logoUrl}
               alt="ScubaPlaydate"
               className="h-10 w-10 object-contain"
+              style={{ background: 'transparent' }}
             />
             <span className="text-xl font-black text-[#0284C7]">CMS Dashboard</span>
           </div>

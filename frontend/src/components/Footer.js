@@ -1,16 +1,36 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { settingsAPI } from '../utils/api';
+
+const DEFAULT_LOGO = 'https://customer-assets.emergentagent.com/job_e052bca8-dbf8-4933-8039-fac54198bda4/artifacts/kazh3wbj_243CB557-2CF0-4CAF-8C04-44D9C97272E7_1_105_c.jpeg';
 
 const Footer = () => {
+  const [logoUrl, setLogoUrl] = useState(DEFAULT_LOGO);
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const response = await settingsAPI.get();
+        if (response.data.logo_url) {
+          setLogoUrl(response.data.logo_url);
+        }
+      } catch (error) {
+        console.log('Using default logo');
+      }
+    };
+    fetchLogo();
+  }, []);
+
   return (
     <footer data-testid="main-footer" className="bg-[#0A0F1C] text-white py-24">
       <div className="px-6 md:px-12 lg:px-24">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div>
             <img
-              src="https://customer-assets.emergentagent.com/job_e052bca8-dbf8-4933-8039-fac54198bda4/artifacts/kazh3wbj_243CB557-2CF0-4CAF-8C04-44D9C97272E7_1_105_c.jpeg"
+              src={logoUrl}
               alt="ScubaPlaydate"
               className="h-16 w-16 mb-4 object-contain"
+              style={{ background: 'transparent' }}
             />
             <h3 className="text-2xl font-bold mb-2">ScubaPlaydate</h3>
             <p className="text-[#94A3B8] text-sm leading-relaxed">
