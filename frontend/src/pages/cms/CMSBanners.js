@@ -4,7 +4,6 @@ import { bannersAPI, uploadAPI } from '../../utils/api';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
 import { Checkbox } from '../../components/ui/checkbox';
 import { ArrowLeft, Plus, Pencil, Trash } from '@phosphor-icons/react';
 import { toast } from 'sonner';
@@ -136,13 +135,15 @@ const CMSBanners = () => {
                 </div>
                 <div>
                   <Label>Position</Label>
-                  <Select value={formData.position} onValueChange={(value) => setFormData({ ...formData, position: value })}>
-                    <SelectTrigger className="rounded-none" data-testid="banner-position-select"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="sidebar">Sidebar (Right side of homepage)</SelectItem>
-                      <SelectItem value="bottom">Bottom (Full width before footer)</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <select
+                    value={formData.position}
+                    onChange={(e) => setFormData({ ...formData, position: e.target.value })}
+                    className="mt-1 w-full rounded-none border border-[#E2E8F0] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0284C7]"
+                    data-testid="banner-position-select"
+                  >
+                    <option value="sidebar">Sidebar (Right side of homepage)</option>
+                    <option value="bottom">Bottom (Full width before footer)</option>
+                  </select>
                   <p className="text-xs text-[#94A3B8] mt-1">
                     {formData.position === 'sidebar' ? 'Appears on the right sidebar of the homepage' : 'Appears full-width above the footer on all pages'}
                   </p>

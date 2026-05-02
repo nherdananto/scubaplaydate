@@ -22,13 +22,12 @@ const ArticleDetail = () => {
 
       if (response.data.related_articles && response.data.related_articles.length > 0) {
         const related = await Promise.all(
-          response.data.related_articles.map(id => articlesAPI.get(id).catch(() => null))
+          response.data.related_articles.slice(0, 3).map(id => articlesAPI.get(id).catch(() => null))
         );
         setRelatedArticles(related.filter(r => r).map(r => r.data));
       }
     } catch (error) {
-      console.error('Error loading article:', error);
-    }
+      console.error('Error loading article:', error);\n    }
   };
 
   if (!article) {

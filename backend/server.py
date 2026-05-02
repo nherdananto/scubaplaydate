@@ -63,14 +63,18 @@ class Article(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     title: str
+    title_id: Optional[str] = None
     h2_subtitle: str
+    h2_subtitle_id: Optional[str] = None
     content_html: str
+    content_html_id: Optional[str] = None
     category: str
     subcategory: Optional[str] = None
     author_name: str
     slug: str
     featured: bool = False
     status: str = "draft"
+    language: str = "en"
     seo_title: Optional[str] = None
     seo_description: Optional[str] = None
     seo_keywords: Optional[str] = None
@@ -81,14 +85,18 @@ class Article(BaseModel):
 
 class ArticleCreate(BaseModel):
     title: str
+    title_id: Optional[str] = None
     h2_subtitle: str
+    h2_subtitle_id: Optional[str] = None
     content_html: str
+    content_html_id: Optional[str] = None
     category: str
     subcategory: Optional[str] = None
     author_name: str
     slug: str
     featured: bool = False
     status: str = "draft"
+    language: str = "en"
     seo_title: Optional[str] = None
     seo_description: Optional[str] = None
     seo_keywords: Optional[str] = None

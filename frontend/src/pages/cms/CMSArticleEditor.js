@@ -1,28 +1,35 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
+import { Editor } from '@tinymce/tinymce-react';
 import { articlesAPI, uploadAPI } from '../../utils/api';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Checkbox } from '../../components/ui/checkbox';
-import { ArrowLeft, FloppyDisk } from '@phosphor-icons/react';
+import { ArrowLeft, FloppyDisk, Globe } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 
 const CMSArticleEditor = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const editorRef = useRef(null);
+  const editorEnRef = useRef(null);
+  const editorIdRef = useRef(null);
+  const [allArticles, setAllArticles] = useState([]);
 
   const [formData, setFormData] = useState({
     title: '',
+    title_id: '',
     h2_subtitle: '',
+    h2_subtitle_id: '',
     content_html: '',
+    content_html_id: '',
     category: 'News',
     subcategory: '',
     author_name: '',
     slug: '',
     featured: false,
     status: 'draft',
+    language: 'en',
     seo_title: '',
     seo_description: '',
     seo_keywords: '',
@@ -40,27 +47,6 @@ const CMSArticleEditor = () => {
     Community: ['Stories', 'Interviews'],
   };
 
-  const execCommand = (command, value = null) => {
-    document.execCommand(command, false, value);
-    editorRef.current?.focus();
-  };
-
-  const handleEditorBlur = () => {
-    if (editorRef.current) {
-      setFormData({ ...formData, content_html: editorRef.current.innerHTML });
-    }
-  };
-
-  const handleEditorInit = () => {
-    if (editorRef.current && formData.content_html) {
-      editorRef.current.innerHTML = formData.content_html;
-    }
-  };
-
-  useEffect(() => {
-    handleEditorInit();
-  }, [id]);
-
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -70,6 +56,7 @@ const CMSArticleEditor = () => {
     if (id) {
       loadArticle();
     }
+    loadAllArticles();
   }, [id, navigate]);
 
   const loadArticle = async () => {
@@ -78,6 +65,15 @@ const CMSArticleEditor = () => {
       setFormData(response.data);
     } catch (error) {
       toast.error('Failed to load article');
+    }
+  };
+
+  const loadAllArticles = async () => {
+    try {
+      const response = await articlesAPI.list({ limit: 200, status: 'published' });
+      setAllArticles(response.data);
+    } catch (error) {
+      console.log('Failed to load articles for selection');
     }
   };
 
@@ -101,13 +97,26 @@ const CMSArticleEditor = () => {
     }
   };
 
+  const handleRelatedArticleToggle = (articleId) => {
+    const current = formData.related_articles || [];
+    if (current.includes(articleId)) {
+      setFormData({ ...formData, related_articles: current.filter(id => id !== articleId) });
+    } else if (current.length < 3) {
+      setFormData({ ...formData, related_articles: [...current, articleId] });
+    } else {
+      toast.error('Maximum 3 related articles allowed');
+    }
+  };
+
   const handleSave = async () => {
     if (!formData.title || !formData.h2_subtitle || !formData.author_name || !formData.slug) {
-      toast.error('Please fill in all required fields');
+      toast.error('Please fill in all required fields (English)');
       return;
     }
 
-    const dataToSave = { ...formData };
+    const contentEn = editorEnRef.current ? editorEnRef.current.getContent() : formData.content_html;
+    const contentId = editorIdRef.current ? editorIdRef.current.getContent() : formData.content_html_id;
+    const dataToSave = { ...formData, content_html: contentEn, content_html_id: contentId };
 
     try {
       if (id) {
@@ -139,23 +148,109 @@ const CMSArticleEditor = () => {
           <h1 className="text-4xl font-black text-[#0A0F1C] mb-2 tracking-tight">
             {id ? 'Edit Article' : 'Create New Article'}
           </h1>
-          <p className="text-[#475569]">Fill in the details for your article</p>
+          <p className="text-[#475569]">Fill in the details for your article in both English and Bahasa Indonesia</p>
         </div>
 
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <Label htmlFor="title">Title *</Label>
-              <Input
-                id="title"
-                value={formData.title}
-                onChange={(e) => handleInputChange('title', e.target.value)}
-                className="mt-1 rounded-none"
-                data-testid="article-title-input"
-                placeholder="Enter article title"
-              />
+        <div className="space-y-8">
+          <div className="bg-[#F8FAFC] p-6 rounded-sm border border-[#E2E8F0]">
+            <div className="flex items-center gap-2 mb-4">
+              <Globe size={20} className="text-[#0284C7]" weight="bold" />
+              <h2 className="text-xl font-bold text-[#0A0F1C]">English Version</h2>
             </div>
+            
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="title">Title (English) *</Label>
+                <Input
+                  id="title"
+                  value={formData.title}
+                  onChange={(e) => handleInputChange('title', e.target.value)}
+                  className="mt-1 rounded-none bg-white"
+                  data-testid="article-title-input"
+                  placeholder="Enter article title in English"
+                />
+              </div>
 
+              <div>
+                <Label htmlFor="h2_subtitle">Subtitle (English) *</Label>
+                <Input
+                  id="h2_subtitle"
+                  value={formData.h2_subtitle}
+                  onChange={(e) => handleInputChange('h2_subtitle', e.target.value)}
+                  className="mt-1 rounded-none bg-white"
+                  data-testid="article-subtitle-input"
+                  placeholder="Brief description in English"
+                />
+              </div>
+
+              <div>
+                <Label>Content (English) *</Label>
+                <div className="mt-2">
+                  <Editor
+                    apiKey="8at83rd9smyi9qk4fuip7ofag7egov9mez24zp89l7qv31h6"
+                    onInit={(evt, editor) => (editorEnRef.current = editor)}
+                    initialValue={formData.content_html}
+                    init={{
+                      height: 400,
+                      menubar: false,
+                      plugins: ['lists', 'link', 'image', 'code'],
+                      toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image | code',
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-[#FFF4ED] p-6 rounded-sm border border-[#F26419]">
+            <div className="flex items-center gap-2 mb-4">
+              <Globe size={20} className="text-[#F26419]" weight="bold" />
+              <h2 className="text-xl font-bold text-[#0A0F1C]">Bahasa Indonesia Version</h2>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="title_id">Judul (Bahasa Indonesia) *</Label>
+                <Input
+                  id="title_id"
+                  value={formData.title_id || ''}
+                  onChange={(e) => handleInputChange('title_id', e.target.value)}
+                  className="mt-1 rounded-none bg-white"
+                  placeholder="Masukkan judul artikel dalam Bahasa Indonesia"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="h2_subtitle_id">Subjudul (Bahasa Indonesia) *</Label>
+                <Input
+                  id="h2_subtitle_id"
+                  value={formData.h2_subtitle_id || ''}
+                  onChange={(e) => handleInputChange('h2_subtitle_id', e.target.value)}
+                  className="mt-1 rounded-none bg-white"
+                  placeholder="Deskripsi singkat dalam Bahasa Indonesia"
+                />
+              </div>
+
+              <div>
+                <Label>Konten (Bahasa Indonesia) *</Label>
+                <div className="mt-2">
+                  <Editor
+                    apiKey="8at83rd9smyi9qk4fuip7ofag7egov9mez24zp89l7qv31h6"
+                    onInit={(evt, editor) => (editorIdRef.current = editor)}
+                    initialValue={formData.content_html_id}
+                    init={{
+                      height: 400,
+                      menubar: false,
+                      plugins: ['lists', 'link', 'image', 'code'],
+                      toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image | code',
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <Label htmlFor="slug">Slug *</Label>
               <Input
@@ -167,18 +262,17 @@ const CMSArticleEditor = () => {
                 placeholder="article-slug"
               />
             </div>
-          </div>
-
-          <div>
-            <Label htmlFor="h2_subtitle">Subtitle (H2) *</Label>
-            <Input
-              id="h2_subtitle"
-              value={formData.h2_subtitle}
-              onChange={(e) => handleInputChange('h2_subtitle', e.target.value)}
-              className="mt-1 rounded-none"
-              data-testid="article-subtitle-input"
-              placeholder="Brief description of the article"
-            />
+            <div>
+              <Label htmlFor="author_name">Author Name *</Label>
+              <Input
+                id="author_name"
+                value={formData.author_name}
+                onChange={(e) => handleInputChange('author_name', e.target.value)}
+                className="mt-1 rounded-none"
+                data-testid="article-author-input"
+                placeholder="John Doe"
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -214,20 +308,6 @@ const CMSArticleEditor = () => {
             </div>
 
             <div>
-              <Label htmlFor="author_name">Author Name *</Label>
-              <Input
-                id="author_name"
-                value={formData.author_name}
-                onChange={(e) => handleInputChange('author_name', e.target.value)}
-                className="mt-1 rounded-none"
-                data-testid="article-author-input"
-                placeholder="John Doe"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
               <Label htmlFor="status">Status</Label>
               <select
                 id="status"
@@ -240,18 +320,16 @@ const CMSArticleEditor = () => {
                 <option value="published">Published</option>
               </select>
             </div>
+          </div>
 
-            <div className="flex items-end">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="featured"
-                  checked={formData.featured}
-                  onCheckedChange={(checked) => handleInputChange('featured', checked)}
-                  data-testid="article-featured-checkbox"
-                />
-                <Label htmlFor="featured" className="cursor-pointer">Featured Article</Label>
-              </div>
-            </div>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="featured"
+              checked={formData.featured}
+              onCheckedChange={(checked) => handleInputChange('featured', checked)}
+              data-testid="article-featured-checkbox"
+            />
+            <Label htmlFor="featured" className="cursor-pointer">Featured Article</Label>
           </div>
 
           <div>
@@ -272,32 +350,24 @@ const CMSArticleEditor = () => {
           </div>
 
           <div>
-            <Label>Article Content *</Label>
-            <div className="mt-2 border border-[#E2E8F0] rounded-sm">
-              <div className="bg-[#F8FAFC] border-b border-[#E2E8F0] p-2 flex flex-wrap gap-2">
-                <button type="button" onClick={() => execCommand('bold')} className="px-3 py-1 border border-[#E2E8F0] rounded-sm hover:bg-white font-bold" title="Bold">B</button>
-                <button type="button" onClick={() => execCommand('italic')} className="px-3 py-1 border border-[#E2E8F0] rounded-sm hover:bg-white italic" title="Italic">I</button>
-                <button type="button" onClick={() => execCommand('underline')} className="px-3 py-1 border border-[#E2E8F0] rounded-sm hover:bg-white underline" title="Underline">U</button>
-                <div className="w-px bg-[#E2E8F0]"></div>
-                <button type="button" onClick={() => execCommand('formatBlock', '<h3>')} className="px-3 py-1 border border-[#E2E8F0] rounded-sm hover:bg-white font-semibold" title="Heading">H3</button>
-                <button type="button" onClick={() => execCommand('formatBlock', '<p>')} className="px-3 py-1 border border-[#E2E8F0] rounded-sm hover:bg-white" title="Paragraph">P</button>
-                <div className="w-px bg-[#E2E8F0]"></div>
-                <button type="button" onClick={() => execCommand('insertUnorderedList')} className="px-3 py-1 border border-[#E2E8F0] rounded-sm hover:bg-white" title="Bullet List">• List</button>
-                <button type="button" onClick={() => execCommand('insertOrderedList')} className="px-3 py-1 border border-[#E2E8F0] rounded-sm hover:bg-white" title="Numbered List">1. List</button>
-                <div className="w-px bg-[#E2E8F0]"></div>
-                <button type="button" onClick={() => execCommand('createLink', prompt('Enter URL:'))} className="px-3 py-1 border border-[#E2E8F0] rounded-sm hover:bg-white" title="Insert Link">🔗 Link</button>
-              </div>
-              <div
-                ref={editorRef}
-                contentEditable
-                suppressContentEditableWarning
-                className="min-h-[400px] p-4 focus:outline-none prose max-w-none"
-                onBlur={handleEditorBlur}
-                style={{ fontFamily: 'Manrope, Arial, sans-serif', fontSize: '16px', lineHeight: '1.6' }}
-              />
+            <Label>Related Articles (Maximum 3)</Label>
+            <div className="mt-2 border border-[#E2E8F0] rounded-sm p-4 bg-[#F8FAFC] max-h-64 overflow-y-auto">
+              {allArticles.filter(a => a.id !== id).map((article) => (
+                <div key={article.id} className="flex items-center space-x-2 py-2 border-b border-[#E2E8F0] last:border-0">
+                  <Checkbox
+                    id={`related-${article.id}`}
+                    checked={(formData.related_articles || []).includes(article.id)}
+                    onCheckedChange={() => handleRelatedArticleToggle(article.id)}
+                    disabled={(formData.related_articles || []).length >= 3 && !(formData.related_articles || []).includes(article.id)}
+                  />
+                  <Label htmlFor={`related-${article.id}`} className="cursor-pointer text-sm">
+                    {article.title}
+                  </Label>
+                </div>
+              ))}
             </div>
-            <p className="text-xs text-[#94A3B8] mt-2">
-              Use the toolbar above to format your content. You can also paste HTML directly.
+            <p className="text-xs text-[#94A3B8] mt-1">
+              Selected: {(formData.related_articles || []).length}/3
             </p>
           </div>
 
