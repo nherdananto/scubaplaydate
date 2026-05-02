@@ -90,9 +90,9 @@ const Footer = () => {
             </h4>
             <ul className="space-y-2">
               <li>
-                <a href="#contribute" className="text-sm text-[#94A3B8] hover:text-white transition-colors" data-testid="footer-contribute">
+                <Link to="/contribute" className="text-sm text-[#94A3B8] hover:text-white transition-colors" data-testid="footer-contribute">
                   How to Contribute
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="#about" className="text-sm text-[#94A3B8] hover:text-white transition-colors" data-testid="footer-about">

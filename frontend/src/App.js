@@ -9,6 +9,7 @@ import GearPage from './pages/GearPage';
 import TrainingPage from './pages/TrainingPage';
 import PhotographyPage from './pages/PhotographyPage';
 import CommunityPage from './pages/CommunityPage';
+import ContributePage from './pages/ContributePage';
 import CMSLogin from './pages/cms/CMSLogin';
 import CMSDashboard from './pages/cms/CMSDashboard';
 import CMSArticles from './pages/cms/CMSArticles';
@@ -60,6 +61,7 @@ function App() {
           <Route path="/photography/:subcategory" element={<PhotographyPage />} />
           <Route path="/community" element={<CommunityPage />} />
           <Route path="/community/:subcategory" element={<CommunityPage />} />
+          <Route path="/contribute" element={<ContributePage />} />
           <Route path="/article/:slug" element={<ArticleDetail />} />
           
           <Route path="/forinternalonly" element={<CMSLogin />} />
