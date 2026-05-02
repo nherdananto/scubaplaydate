@@ -23,7 +23,7 @@ const Footer = () => {
 
   return (
     <footer data-testid="main-footer" className="bg-[#0A0F1C] text-white py-24">
-      <div className="px-6 md:px-12 lg:px-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div>
             <img

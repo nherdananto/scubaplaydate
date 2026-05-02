@@ -51,7 +51,7 @@ const Home = () => {
       
       <div className="pt-20">
         {heroArticle && (
-          <section className="px-6 md:px-12 lg:px-24 py-12">
+          <section className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-12">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
               <Link
                 to={`/article/${heroArticle.slug}`}
@@ -106,7 +106,7 @@ const Home = () => {
           </section>
         )}
 
-        <section className="px-6 md:px-12 lg:px-24 py-16">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-16">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
             <div className="md:col-span-8">
               <div className="flex items-center gap-3 mb-8">
@@ -207,7 +207,7 @@ const Home = () => {
         </section>
 
         {banners.filter(b => b.position === 'bottom').slice(0, 1).map((banner) => (
-          <section key={banner.id} className="px-6 md:px-12 lg:px-24 py-8">
+          <section key={banner.id} className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-8">
             <a
               href={banner.link_url || '#'}
               target="_blank"
@@ -229,7 +229,7 @@ const Home = () => {
         ))}
         
         {banners.filter(b => b.position === 'bottom').length === 0 && (
-          <section className="px-6 md:px-12 lg:px-24 py-8">
+          <section className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-8">
             <div className="bg-[#FFF4ED] border-2 border-dashed border-[#F26419] p-12 rounded-sm text-center">
               <div className="text-sm font-semibold text-[#F26419] mb-2">Bottom Banner Placement (Full Width)</div>
               <p className="text-sm text-[#64748B]">No banner configured</p>

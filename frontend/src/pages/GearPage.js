@@ -28,7 +28,7 @@ const GearPage = () => {
   return (
     <div data-testid="gear-page" className="bg-white">
       <Navbar />
-      <div className="pt-32 pb-16 px-6 md:px-12 lg:px-24">
+      <div className="max-w-7xl mx-auto pt-32 pb-16 px-4 sm:px-6 md:px-8 lg:px-12">
         <div className="mb-12">
           <div className="flex items-center gap-3 mb-4">
             <ShoppingBag size={32} className="text-[#0284C7]" weight="bold" />

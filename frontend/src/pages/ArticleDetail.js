@@ -53,7 +53,7 @@ const ArticleDetail = () => {
       <Navbar />
 
       <article className="pt-32 pb-16">
-        <div className="px-6 md:px-12 lg:px-24 max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
           <div className="mb-8">
             <span className="inline-block bg-[#F1F5F9] text-[#475569] px-3 py-1 rounded-sm text-xs font-semibold uppercase tracking-wider mb-4">
               {article.category}
@@ -101,7 +101,7 @@ const ArticleDetail = () => {
         </div>
 
         {relatedArticles.length > 0 && (
-          <div className="px-6 md:px-12 lg:px-24 max-w-4xl mx-auto mt-16 pt-16 border-t border-[#E2E8F0]">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 mt-16 pt-16 border-t border-[#E2E8F0]">
             <h3 className="text-2xl font-bold text-[#0A0F1C] mb-8 tracking-tight">{t('relatedArticles')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {relatedArticles.map((related) => (
