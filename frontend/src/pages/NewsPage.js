@@ -4,12 +4,18 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { articlesAPI } from '../utils/api';
 import { Newspaper } from '@phosphor-icons/react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const NewsPage = () => {
   const { subcategory } = useParams();
   const [articles, setArticles] = useState([]);
+  const { language, t } = useLanguage();
 
-  const subcategories = ['Industry', 'Marine Life', 'Conservation'];
+  const subcategories = [
+    { value: 'Industry', key: 'industry' },
+    { value: 'Marine Life', key: 'marineLife' },
+    { value: 'Conservation', key: 'conservation' },
+  ];
 
   useEffect(() => {
     loadArticles();
@@ -36,10 +42,10 @@ const NewsPage = () => {
         <div className="mb-12">
           <div className="flex items-center gap-3 mb-4">
             <Newspaper size={32} className="text-[#0284C7]" weight="bold" />
-            <h1 className="text-5xl font-black text-[#0A0F1C] tracking-tighter">News</h1>
+            <h1 className="text-5xl font-black text-[#0A0F1C] tracking-tighter">{t('news')}</h1>
           </div>
           <p className="text-lg text-[#475569]">
-            Stay updated with the latest scuba diving industry news, marine life discoveries, and conservation efforts.
+            {t('newsDesc')}
           </p>
         </div>
 
@@ -53,20 +59,20 @@ const NewsPage = () => {
                 : 'border-transparent text-[#475569] hover:text-[#0284C7]'
             }`}
           >
-            All News
+            {t('allNews')}
           </Link>
           {subcategories.map((sub) => (
             <Link
-              key={sub}
-              to={`/news/${sub.toLowerCase()}`}
-              data-testid={`news-${sub.toLowerCase()}-tab`}
+              key={sub.value}
+              to={`/news/${sub.value.toLowerCase()}`}
+              data-testid={`news-${sub.value.toLowerCase()}-tab`}
               className={`px-4 py-2 text-sm font-medium rounded-none border-b-2 transition-colors ${
-                subcategory === sub.toLowerCase()
+                subcategory === sub.value.toLowerCase()
                   ? 'border-[#0284C7] text-[#0284C7]'
                   : 'border-transparent text-[#475569] hover:text-[#0284C7]'
               }`}
             >
-              {sub}
+              {t(sub.key)}
             </Link>
           ))}
         </div>
@@ -91,10 +97,10 @@ const NewsPage = () => {
                   {article.subcategory || article.category}
                 </span>
                 <h3 className="text-xl font-bold text-[#0A0F1C] mb-2 tracking-tight group-hover:text-[#0284C7] transition-colors">
-                  {article.title}
+                  {language === 'id' && article.title_id ? article.title_id : article.title}
                 </h3>
                 <p className="text-sm text-[#475569] line-clamp-2 leading-relaxed">
-                  {article.h2_subtitle}
+                  {language === 'id' && article.h2_subtitle_id ? article.h2_subtitle_id : article.h2_subtitle}
                 </p>
               </div>
             </Link>
@@ -103,7 +109,7 @@ const NewsPage = () => {
 
         {articles.length === 0 && (
           <div className="text-center py-16">
-            <p className="text-[#94A3B8]">No articles found in this category.</p>
+            <p className="text-[#94A3B8]">{t('noArticles')}</p>
           </div>
         )}
       </div>

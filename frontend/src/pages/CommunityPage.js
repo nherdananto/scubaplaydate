@@ -4,11 +4,16 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { articlesAPI } from '../utils/api';
 import { Users } from '@phosphor-icons/react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const CommunityPage = () => {
   const { subcategory } = useParams();
   const [articles, setArticles] = useState([]);
-  const subcategories = ['Stories', 'Interviews'];
+  const { language, t } = useLanguage();
+  const subcategories = [
+    { value: 'Stories', key: 'stories' },
+    { value: 'Interviews', key: 'interviews' },
+  ];
 
   useEffect(() => {
     loadArticles();
@@ -32,14 +37,14 @@ const CommunityPage = () => {
         <div className="mb-12">
           <div className="flex items-center gap-3 mb-4">
             <Users size={32} className="text-[#0284C7]" weight="bold" />
-            <h1 className="text-5xl font-black text-[#0A0F1C] tracking-tighter">Community</h1>
+            <h1 className="text-5xl font-black text-[#0A0F1C] tracking-tighter">{t('community')}</h1>
           </div>
-          <p className="text-lg text-[#475569]">Inspiring stories and interviews from the global diving community.</p>
+          <p className="text-lg text-[#475569]">{t('communityDesc')}</p>
         </div>
-        <div className="flex gap-3 mb-12">
-          <Link to="/community" data-testid="community-all-tab" className={`px-4 py-2 text-sm font-medium rounded-none border-b-2 transition-colors ${!subcategory ? 'border-[#0284C7] text-[#0284C7]' : 'border-transparent text-[#475569] hover:text-[#0284C7]'}`}>All Community</Link>
+        <div className="flex gap-3 mb-12 flex-wrap">
+          <Link to="/community" data-testid="community-all-tab" className={`px-4 py-2 text-sm font-medium rounded-none border-b-2 transition-colors ${!subcategory ? 'border-[#0284C7] text-[#0284C7]' : 'border-transparent text-[#475569] hover:text-[#0284C7]'}`}>{t('allCommunity')}</Link>
           {subcategories.map((sub) => (
-            <Link key={sub} to={`/community/${sub.toLowerCase()}`} data-testid={`community-${sub.toLowerCase()}-tab`} className={`px-4 py-2 text-sm font-medium rounded-none border-b-2 transition-colors ${subcategory === sub.toLowerCase() ? 'border-[#0284C7] text-[#0284C7]' : 'border-transparent text-[#475569] hover:text-[#0284C7]'}`}>{sub}</Link>
+            <Link key={sub.value} to={`/community/${sub.value.toLowerCase()}`} data-testid={`community-${sub.value.toLowerCase()}-tab`} className={`px-4 py-2 text-sm font-medium rounded-none border-b-2 transition-colors ${subcategory === sub.value.toLowerCase() ? 'border-[#0284C7] text-[#0284C7]' : 'border-transparent text-[#475569] hover:text-[#0284C7]'}`}>{t(sub.key)}</Link>
           ))}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -50,13 +55,17 @@ const CommunityPage = () => {
               </div>
               <div className="p-6">
                 <span className="text-xs tracking-[0.2em] uppercase font-bold text-[#64748B] mb-2 inline-block">{article.subcategory || article.category}</span>
-                <h3 className="text-xl font-bold text-[#0A0F1C] mb-2 tracking-tight group-hover:text-[#0284C7] transition-colors">{article.title}</h3>
-                <p className="text-sm text-[#475569] line-clamp-2 leading-relaxed">{article.h2_subtitle}</p>
+                <h3 className="text-xl font-bold text-[#0A0F1C] mb-2 tracking-tight group-hover:text-[#0284C7] transition-colors">
+                  {language === 'id' && article.title_id ? article.title_id : article.title}
+                </h3>
+                <p className="text-sm text-[#475569] line-clamp-2 leading-relaxed">
+                  {language === 'id' && article.h2_subtitle_id ? article.h2_subtitle_id : article.h2_subtitle}
+                </p>
               </div>
             </Link>
           ))}
         </div>
-        {articles.length === 0 && <div className="text-center py-16"><p className="text-[#94A3B8]">No articles found.</p></div>}
+        {articles.length === 0 && <div className="text-center py-16"><p className="text-[#94A3B8]">{t('noArticles')}</p></div>}
       </div>
       <Footer />
     </div>
