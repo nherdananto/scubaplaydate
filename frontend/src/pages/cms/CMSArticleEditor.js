@@ -1,11 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import { Editor } from '@tinymce/tinymce-react';
 import { articlesAPI, uploadAPI } from '../../utils/api';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
 import { Checkbox } from '../../components/ui/checkbox';
 import { ArrowLeft, FloppyDisk } from '@phosphor-icons/react';
 import { toast } from 'sonner';
@@ -40,6 +38,11 @@ const CMSArticleEditor = () => {
     Training: ['Tips', 'Safety'],
     Photography: ['Tutorials', 'Gear'],
     Community: ['Stories', 'Interviews'],
+  };
+
+  const execCommand = (command, value = null) => {
+    document.execCommand(command, false, value);
+    editorRef.current?.focus();
   };
 
   useEffect(() => {
@@ -88,8 +91,7 @@ const CMSArticleEditor = () => {
       return;
     }
 
-    const content = editorRef.current ? editorRef.current.getContent() : formData.content_html;
-    const dataToSave = { ...formData, content_html: content };
+    const dataToSave = { ...formData };
 
     try {
       if (id) {
@@ -166,30 +168,33 @@ const CMSArticleEditor = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
               <Label htmlFor="category">Category *</Label>
-              <Select value={formData.category} onValueChange={(value) => handleInputChange('category', value)}>
-                <SelectTrigger className="rounded-none" data-testid="article-category-select">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <select
+                id="category"
+                value={formData.category}
+                onChange={(e) => handleInputChange('category', e.target.value)}
+                className="mt-1 w-full rounded-none border border-[#E2E8F0] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0284C7]"
+                data-testid="article-category-select"
+              >
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
             </div>
 
             <div>
               <Label htmlFor="subcategory">Subcategory</Label>
-              <Select value={formData.subcategory} onValueChange={(value) => handleInputChange('subcategory', value)}>
-                <SelectTrigger className="rounded-none" data-testid="article-subcategory-select">
-                  <SelectValue placeholder="Select subcategory" />
-                </SelectTrigger>
-                <SelectContent>
-                  {(subcategoryMap[formData.category] || []).map((sub) => (
-                    <SelectItem key={sub} value={sub}>{sub}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <select
+                id="subcategory"
+                value={formData.subcategory}
+                onChange={(e) => handleInputChange('subcategory', e.target.value)}
+                className="mt-1 w-full rounded-none border border-[#E2E8F0] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0284C7]"
+                data-testid="article-subcategory-select"
+              >
+                <option value="">Select subcategory</option>
+                {(subcategoryMap[formData.category] || []).map((sub) => (
+                  <option key={sub} value={sub}>{sub}</option>
+                ))}
+              </select>
             </div>
 
             <div>
@@ -208,15 +213,16 @@ const CMSArticleEditor = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <Label htmlFor="status">Status</Label>
-              <Select value={formData.status} onValueChange={(value) => handleInputChange('status', value)}>
-                <SelectTrigger className="rounded-none" data-testid="article-status-select">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="draft">Draft</SelectItem>
-                  <SelectItem value="published">Published</SelectItem>
-                </SelectContent>
-              </Select>
+              <select
+                id="status"
+                value={formData.status}
+                onChange={(e) => handleInputChange('status', e.target.value)}
+                className="mt-1 w-full rounded-none border border-[#E2E8F0] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0284C7]"
+                data-testid="article-status-select"
+              >
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+              </select>
             </div>
 
             <div className="flex items-end">
@@ -252,35 +258,31 @@ const CMSArticleEditor = () => {
           <div>
             <Label>Article Content *</Label>
             <div className="mt-2 border border-[#E2E8F0] rounded-sm">
-              <Editor
-                apiKey="no-api-key"
-                onInit={(evt, editor) => (editorRef.current = editor)}
-                initialValue={formData.content_html}
-                init={{
-                  height: 500,
-                  menubar: true,
-                  plugins: [
-                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap',
-                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                    'insertdatetime', 'media', 'table', 'preview', 'help', 'wordcount', 'codesample'
-                  ],
-                  toolbar: 'undo redo | blocks | bold italic forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | code | help',
-                  content_style: 'body { font-family: Manrope, Arial, sans-serif; font-size: 16px; line-height: 1.6; padding: 10px; }',
-                  image_title: true,
-                  automatic_uploads: true,
-                  file_picker_types: 'image',
-                  images_upload_handler: async (blobInfo) => {
-                    const file = blobInfo.blob();
-                    try {
-                      const response = await uploadAPI.upload(file);
-                      return response.data.url;
-                    } catch (error) {
-                      throw new Error('Image upload failed');
-                    }
-                  },
-                }}
+              <div className="bg-[#F8FAFC] border-b border-[#E2E8F0] p-2 flex flex-wrap gap-2">
+                <button type="button" onClick={() => execCommand('bold')} className="px-3 py-1 border border-[#E2E8F0] rounded-sm hover:bg-white font-bold" title="Bold">B</button>
+                <button type="button" onClick={() => execCommand('italic')} className="px-3 py-1 border border-[#E2E8F0] rounded-sm hover:bg-white italic" title="Italic">I</button>
+                <button type="button" onClick={() => execCommand('underline')} className="px-3 py-1 border border-[#E2E8F0] rounded-sm hover:bg-white underline" title="Underline">U</button>
+                <div className="w-px bg-[#E2E8F0]"></div>
+                <button type="button" onClick={() => execCommand('formatBlock', '<h3>')} className="px-3 py-1 border border-[#E2E8F0] rounded-sm hover:bg-white font-semibold" title="Heading">H3</button>
+                <button type="button" onClick={() => execCommand('formatBlock', '<p>')} className="px-3 py-1 border border-[#E2E8F0] rounded-sm hover:bg-white" title="Paragraph">P</button>
+                <div className="w-px bg-[#E2E8F0]"></div>
+                <button type="button" onClick={() => execCommand('insertUnorderedList')} className="px-3 py-1 border border-[#E2E8F0] rounded-sm hover:bg-white" title="Bullet List">• List</button>
+                <button type="button" onClick={() => execCommand('insertOrderedList')} className="px-3 py-1 border border-[#E2E8F0] rounded-sm hover:bg-white" title="Numbered List">1. List</button>
+                <div className="w-px bg-[#E2E8F0]"></div>
+                <button type="button" onClick={() => execCommand('createLink', prompt('Enter URL:'))} className="px-3 py-1 border border-[#E2E8F0] rounded-sm hover:bg-white" title="Insert Link">🔗 Link</button>
+              </div>
+              <div
+                ref={editorRef}
+                contentEditable
+                className="min-h-[400px] p-4 focus:outline-none prose max-w-none"
+                dangerouslySetInnerHTML={{ __html: formData.content_html }}
+                onInput={(e) => setFormData({ ...formData, content_html: e.currentTarget.innerHTML })}
+                style={{ fontFamily: 'Manrope, Arial, sans-serif', fontSize: '16px', lineHeight: '1.6' }}
               />
             </div>
+            <p className="text-xs text-[#94A3B8] mt-2">
+              Use the toolbar above to format your content. You can also paste HTML directly.
+            </p>
           </div>
 
           <div className="border-t border-[#E2E8F0] pt-6">
