@@ -27,7 +27,8 @@ const ArticleDetail = () => {
         setRelatedArticles(related.filter(r => r).map(r => r.data));
       }
     } catch (error) {
-      console.error('Error loading article:', error);\n    }
+      console.error('Error loading article:', error);
+    }
   };
 
   if (!article) {
