@@ -35,6 +35,9 @@ JWT_EXPIRATION_HOURS = 72
 UPLOAD_DIR = Path("/app/frontend/public/uploads")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
+ALLOWED_IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp', '.gif'}
+MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
+
 class UserRole:
     ADMIN = "admin"
     EDITOR = "editor"
@@ -339,11 +342,17 @@ async def delete_banner(banner_id: str, _admin: User = Depends(require_admin)):
 
 @api_router.post("/banners/{banner_id}/click")
 async def track_banner_click(banner_id: str):
+    banner = await db.banners.find_one({"id": banner_id})
+    if not banner:
+        raise HTTPException(status_code=404, detail="Banner not found")
     await db.banners.update_one({"id": banner_id}, {"$inc": {"clicks": 1}})
     return {"message": "Click tracked"}
 
 @api_router.post("/banners/{banner_id}/impression")
 async def track_banner_impression(banner_id: str):
+    banner = await db.banners.find_one({"id": banner_id})
+    if not banner:
+        raise HTTPException(status_code=404, detail="Banner not found")
     await db.banners.update_one({"id": banner_id}, {"$inc": {"impressions": 1}})
     return {"message": "Impression tracked"}
 
@@ -363,12 +372,19 @@ async def update_settings(settings_data: Settings, _admin: User = Depends(requir
 
 @api_router.post("/upload")
 async def upload_file(file: UploadFile = File(...), current_user: User = Depends(get_current_user)):
-    file_ext = Path(file.filename).suffix
+    file_ext = Path(file.filename).suffix.lower()
+    if file_ext not in ALLOWED_IMAGE_EXTENSIONS:
+        raise HTTPException(status_code=400, detail=f"File type not allowed. Allowed: {', '.join(ALLOWED_IMAGE_EXTENSIONS)}")
+    
+    contents = await file.read()
+    if len(contents) > MAX_FILE_SIZE:
+        raise HTTPException(status_code=400, detail=f"File too large. Maximum size: {MAX_FILE_SIZE // (1024*1024)}MB")
+    
     filename = f"{uuid.uuid4()}{file_ext}"
     file_path = UPLOAD_DIR / filename
     
     with file_path.open("wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+        buffer.write(contents)
     
     return {"url": f"/uploads/{filename}", "filename": filename}
 

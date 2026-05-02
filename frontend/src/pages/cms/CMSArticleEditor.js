@@ -1,6 +1,28 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { Editor } from '@tinymce/tinymce-react';
+import 'tinymce/tinymce';
+import 'tinymce/icons/default';
+import 'tinymce/themes/silver';
+import 'tinymce/models/dom';
+import 'tinymce/plugins/advlist';
+import 'tinymce/plugins/autolink';
+import 'tinymce/plugins/lists';
+import 'tinymce/plugins/link';
+import 'tinymce/plugins/image';
+import 'tinymce/plugins/charmap';
+import 'tinymce/plugins/anchor';
+import 'tinymce/plugins/searchreplace';
+import 'tinymce/plugins/visualblocks';
+import 'tinymce/plugins/code';
+import 'tinymce/plugins/fullscreen';
+import 'tinymce/plugins/insertdatetime';
+import 'tinymce/plugins/media';
+import 'tinymce/plugins/table';
+import 'tinymce/plugins/preview';
+import 'tinymce/plugins/help';
+import 'tinymce/plugins/wordcount';
+import 'tinymce/plugins/codesample';
 import { articlesAPI, uploadAPI } from '../../utils/api';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -253,19 +275,23 @@ const CMSArticleEditor = () => {
             <Label>Article Content *</Label>
             <div className="mt-2 border border-[#E2E8F0] rounded-sm">
               <Editor
-                apiKey="no-api-key"
                 onInit={(evt, editor) => (editorRef.current = editor)}
                 initialValue={formData.content_html}
                 init={{
                   height: 500,
                   menubar: true,
+                  base_url: '/node_modules/tinymce',
+                  suffix: '.min',
+                  license_key: 'gpl',
+                  skin: false,
+                  content_css: false,
                   plugins: [
                     'advlist', 'autolink', 'lists', 'link', 'image', 'charmap',
                     'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
                     'insertdatetime', 'media', 'table', 'preview', 'help', 'wordcount', 'codesample'
                   ],
                   toolbar: 'undo redo | blocks | bold italic forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | code | help',
-                  content_style: 'body { font-family: Manrope, Arial, sans-serif; font-size: 16px; }',
+                  content_style: 'body { font-family: Manrope, Arial, sans-serif; font-size: 16px; line-height: 1.6; padding: 10px; }',
                   image_title: true,
                   automatic_uploads: true,
                   file_picker_types: 'image',
