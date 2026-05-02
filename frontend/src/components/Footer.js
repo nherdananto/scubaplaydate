@@ -100,9 +100,9 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="#privacy" className="text-sm text-[#94A3B8] hover:text-white transition-colors" data-testid="footer-privacy">
+                <Link to="/privacy" className="text-sm text-[#94A3B8] hover:text-white transition-colors" data-testid="footer-privacy">
                   Privacy Policy
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
