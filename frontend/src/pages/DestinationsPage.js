@@ -35,14 +35,14 @@ const DestinationsPage = () => {
     <div data-testid="destinations-page" className="bg-white">
       <Navbar />
       <div className="max-w-7xl mx-auto pt-32 pb-16 px-4 sm:px-6 md:px-8 lg:px-12">
-        <div className="mb-12">
-          <div className="flex items-center gap-3 mb-4">
+        <div className="mb-12 text-center">
+          <div className="flex items-center justify-center gap-3 mb-4">
             <MapPin size={32} className="text-[#0284C7]" weight="bold" />
             <h1 className="text-5xl font-black text-[#0A0F1C] tracking-tighter">{t('destinations')}</h1>
           </div>
-          <p className="text-lg text-[#475569]">{t('destinationsDesc')}</p>
+          <p className="text-lg text-[#475569] max-w-2xl mx-auto">{t('destinationsDesc')}</p>
         </div>
-        <div className="flex gap-3 mb-12 flex-wrap">
+        <div className="flex justify-center gap-3 mb-12 flex-wrap">
           <Link to="/destinations" data-testid="destinations-all-tab" className={`px-4 py-2 text-sm font-medium rounded-none border-b-2 transition-colors ${!subcategory ? 'border-[#0284C7] text-[#0284C7]' : 'border-transparent text-[#475569] hover:text-[#0284C7]'}`}>
             {t('allDestinations')}
           </Link>
@@ -52,9 +52,9 @@ const DestinationsPage = () => {
             </Link>
           ))}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="flex flex-wrap justify-center gap-8">
           {articles.map((article) => (
-            <Link key={article.id} to={`/article/${article.slug}`} data-testid={`article-card-${article.id}`} className="group border border-[#E2E8F0] rounded-sm overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all">
+            <Link key={article.id} to={`/article/${article.slug}`} data-testid={`article-card-${article.id}`} className="group w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)] max-w-md border border-[#E2E8F0] rounded-sm overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all">
               <div className="overflow-hidden">
                 <img src={article.featured_image || 'https://images.unsplash.com/photo-1631102403791-8e33d9be6603?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTN8MHwxfHNlYXJjaHwxfHx1bmRlcndhdGVyJTIwbWFyaW5lJTIwbGlmZSUyMHR1cnRsZXxlbnwwfHx8fDE3Nzc3MTEzOTJ8MA&ixlib=rb-4.1.0&q=85'} alt={article.title} className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105" />
               </div>

@@ -34,22 +34,22 @@ const GearPage = () => {
     <div data-testid="gear-page" className="bg-white">
       <Navbar />
       <div className="max-w-7xl mx-auto pt-32 pb-16 px-4 sm:px-6 md:px-8 lg:px-12">
-        <div className="mb-12">
-          <div className="flex items-center gap-3 mb-4">
+        <div className="mb-12 text-center">
+          <div className="flex items-center justify-center gap-3 mb-4">
             <ShoppingBag size={32} className="text-[#0284C7]" weight="bold" />
             <h1 className="text-5xl font-black text-[#0A0F1C] tracking-tighter">{t('gear')}</h1>
           </div>
-          <p className="text-lg text-[#475569]">{t('gearDesc')}</p>
+          <p className="text-lg text-[#475569] max-w-2xl mx-auto">{t('gearDesc')}</p>
         </div>
-        <div className="flex gap-3 mb-12 flex-wrap">
+        <div className="flex justify-center gap-3 mb-12 flex-wrap">
           <Link to="/gear" data-testid="gear-all-tab" className={`px-4 py-2 text-sm font-medium rounded-none border-b-2 transition-colors ${!subcategory ? 'border-[#0284C7] text-[#0284C7]' : 'border-transparent text-[#475569] hover:text-[#0284C7]'}`}>{t('allGear')}</Link>
           {subcategories.map((sub) => (
             <Link key={sub.value} to={`/gear/${sub.value.toLowerCase()}`} data-testid={`gear-${sub.value.toLowerCase()}-tab`} className={`px-4 py-2 text-sm font-medium rounded-none border-b-2 transition-colors ${subcategory === sub.value.toLowerCase() ? 'border-[#0284C7] text-[#0284C7]' : 'border-transparent text-[#475569] hover:text-[#0284C7]'}`}>{t(sub.key)}</Link>
           ))}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="flex flex-wrap justify-center gap-8">
           {articles.map((article) => (
-            <Link key={article.id} to={`/article/${article.slug}`} data-testid={`article-card-${article.id}`} className="group border border-[#E2E8F0] rounded-sm overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all">
+            <Link key={article.id} to={`/article/${article.slug}`} data-testid={`article-card-${article.id}`} className="group w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)] max-w-md border border-[#E2E8F0] rounded-sm overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all">
               <div className="overflow-hidden">
                 <img src={article.featured_image || 'https://static.prod-images.emergentagent.com/jobs/e052bca8-dbf8-4933-8039-fac54198bda4/images/24eff4407ef00897f0c1d1e4036c6158f07f8167c9fe957e6b521f2f0eecd323.png'} alt={article.title} className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105" />
               </div>
