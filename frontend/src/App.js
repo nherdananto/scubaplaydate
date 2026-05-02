@@ -18,6 +18,7 @@ import CMSBanners from './pages/cms/CMSBanners';
 import CMSSettings from './pages/cms/CMSSettings';
 import { Toaster } from './components/ui/sonner';
 import GoogleAnalytics from './components/GoogleAnalytics';
+import { LanguageProvider } from './contexts/LanguageContext';
 
 function App() {
   useEffect(() => {
@@ -40,11 +41,12 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <Toaster position="top-right" />
-      <BrowserRouter>
-        <GoogleAnalytics />
-        <Routes>
+    <LanguageProvider>
+      <div className="App">
+        <Toaster position="top-right" />
+        <BrowserRouter>
+          <GoogleAnalytics />
+          <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/news" element={<NewsPage />} />
           <Route path="/news/:subcategory" element={<NewsPage />} />
@@ -71,6 +73,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </div>
+    </LanguageProvider>
   );
 }
 

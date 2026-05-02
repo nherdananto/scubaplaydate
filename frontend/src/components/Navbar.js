@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ShoppingBag, Camera, GraduationCap, Users, Newspaper, MapPin } from '@phosphor-icons/react';
 import { settingsAPI } from '../utils/api';
+import { useLanguage } from '../contexts/LanguageContext';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const DEFAULT_LOGO = 'https://customer-assets.emergentagent.com/job_e052bca8-dbf8-4933-8039-fac54198bda4/artifacts/kazh3wbj_243CB557-2CF0-4CAF-8C04-44D9C97272E7_1_105_c.jpeg';
 
@@ -10,6 +12,7 @@ const Navbar = () => {
   const [logoUrl, setLogoUrl] = useState(DEFAULT_LOGO);
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,12 +38,12 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: 'News', path: '/news', icon: Newspaper },
-    { name: 'Destinations', path: '/destinations', icon: MapPin },
-    { name: 'Gear', path: '/gear', icon: ShoppingBag },
-    { name: 'Training', path: '/training', icon: GraduationCap },
-    { name: 'Photography', path: '/photography', icon: Camera },
-    { name: 'Community', path: '/community', icon: Users },
+    { name: t('news'), path: '/news', icon: Newspaper },
+    { name: t('destinations'), path: '/destinations', icon: MapPin },
+    { name: t('gear'), path: '/gear', icon: ShoppingBag },
+    { name: t('training'), path: '/training', icon: GraduationCap },
+    { name: t('photography'), path: '/photography', icon: Camera },
+    { name: t('community'), path: '/community', icon: Users },
   ];
 
   return (
@@ -82,6 +85,7 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-4">
+            <LanguageSwitcher />
             <a
               href="https://www.instagram.com/scubaplaydate/"
               target="_blank"

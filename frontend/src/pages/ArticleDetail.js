@@ -5,11 +5,13 @@ import Footer from '../components/Footer';
 import SocialShare from '../components/SocialShare';
 import { articlesAPI } from '../utils/api';
 import { Calendar, User, Tag } from '@phosphor-icons/react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const ArticleDetail = () => {
   const { slug } = useParams();
   const [article, setArticle] = useState(null);
   const [relatedArticles, setRelatedArticles] = useState([]);
+  const { language, t } = useLanguage();
 
   useEffect(() => {
     loadArticle();
@@ -42,6 +44,10 @@ const ArticleDetail = () => {
     );
   }
 
+  const title = language === 'id' && article.title_id ? article.title_id : article.title;
+  const subtitle = language === 'id' && article.h2_subtitle_id ? article.h2_subtitle_id : article.h2_subtitle;
+  const content = language === 'id' && article.content_html_id ? article.content_html_id : article.content_html;
+
   return (
     <div data-testid="article-detail-page" className="bg-white">
       <Navbar />
@@ -53,10 +59,10 @@ const ArticleDetail = () => {
               {article.category}
             </span>
             <h1 className="text-5xl md:text-6xl font-black text-[#0A0F1C] mb-4 tracking-tighter">
-              {article.title}
+              {title}
             </h1>
             <h2 className="text-xl md:text-2xl text-[#475569] font-medium leading-relaxed">
-              {article.h2_subtitle}
+              {subtitle}
             </h2>
           </div>
 
@@ -90,13 +96,13 @@ const ArticleDetail = () => {
 
           <div
             className="article-content text-base text-[#475569] leading-relaxed"
-            dangerouslySetInnerHTML={{ __html: article.content_html }}
+            dangerouslySetInnerHTML={{ __html: content }}
           />
         </div>
 
         {relatedArticles.length > 0 && (
           <div className="px-6 md:px-12 lg:px-24 max-w-4xl mx-auto mt-16 pt-16 border-t border-[#E2E8F0]">
-            <h3 className="text-2xl font-bold text-[#0A0F1C] mb-8 tracking-tight">Related Articles</h3>
+            <h3 className="text-2xl font-bold text-[#0A0F1C] mb-8 tracking-tight">{t('relatedArticles')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {relatedArticles.map((related) => (
                 <Link
@@ -113,7 +119,7 @@ const ArticleDetail = () => {
                     />
                   </div>
                   <h4 className="text-lg font-semibold text-[#0A0F1C] group-hover:text-[#0284C7] transition-colors">
-                    {related.title}
+                    {language === 'id' && related.title_id ? related.title_id : related.title}
                   </h4>
                 </Link>
               ))}
