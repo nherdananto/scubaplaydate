@@ -1,0 +1,156 @@
+{
+  "theme_and_archetype": {
+    "domain": "Scuba Diving News & Lifestyle",
+    "theme": "light",
+    "archetype": "4 (Swiss & High-Contrast)",
+    "rationale": "The user requested a 'sleek, clean, mostly white background' news platform. Archetype 4 provides the authority, clarity, and structural grid needed for a digital magazine while remaining completely modern and accessible. It is tailored with deep marine accents to fit the diving culture."
+  },
+  "colors": {
+    "background": {
+      "primary": "#FFFFFF",
+      "secondary": "#F8FAFC",
+      "tertiary": "#F1F5F9"
+    },
+    "text": {
+      "primary": "#0A0F1C",
+      "secondary": "#475569",
+      "muted": "#94A3B8",
+      "overline": "#64748B"
+    },
+    "brand": {
+      "primary": "#0284C7",
+      "primary_hover": "#0369A1",
+      "accent": "#F26419"
+    },
+    "border": {
+      "default": "#E2E8F0",
+      "focus": "#38BDF8"
+    },
+    "cms_dashboard": {
+      "background": "#FFFFFF",
+      "sidebar": "#FAFAFA",
+      "active_item": "#F1F5F9",
+      "text": "#0F172A"
+    }
+  },
+  "typography": {
+    "heading_font": "Cabinet Grotesk",
+    "body_font": "Manrope",
+    "mono_font": "JetBrains Mono",
+    "rules": {
+      "h1": "text-5xl md:text-6xl tracking-tighter font-black text-[#0A0F1C]",
+      "h2": "text-3xl md:text-4xl tracking-tight font-bold text-[#0A0F1C]",
+      "h3": "text-xl md:text-2xl tracking-tight font-semibold text-[#0A0F1C]",
+      "body": "text-base leading-relaxed font-normal text-[#475569]",
+      "overline": "text-xs tracking-[0.2em] uppercase font-bold text-[#64748B]",
+      "labels": "text-sm font-medium text-[#0A0F1C]"
+    }
+  },
+  "spacing_and_layout": {
+    "philosophy": "Generous Spacing Philosophy. Negative space is used to separate news modules instead of heavy borders to create a sleek magazine aesthetic.",
+    "container_padding": "px-6 md:px-12 lg:px-24",
+    "section_spacing": "py-20 md:py-32 gap-16 md:gap-24",
+    "grid_modes": {
+      "marketing_home": "MODE A: The 'Tetris' Grid for trending articles. Asymmetric, grid-cols-1 md:grid-cols-12 gap-8.",
+      "cms_dashboard": "MODE B: The 'Control Room' Grid. Dense, functional, grid-cols-1 md:grid-cols-4 gap-6."
+    },
+    "radius": "rounded-none or max rounded-sm (2px) to maintain the sharp, sleek editorial magazine feel."
+  },
+  "surfaces_and_micro_themes": {
+    "navbar": "Glassmorphism (Crystal Variant): backdrop-blur-xl bg-white/80, 1px subtle bottom border (border-[#E2E8F0]). Fixed to top, z-50.",
+    "article_cards": "Flat solid surfaces. No shadow by default. On hover: subtle shadow-lg and -translate-y-1. 1px border-[#E2E8F0].",
+    "cms_widgets": "Avoid soft UI/Neumorphism. Use Grid Borders (Technical Look): Flat backgrounds, 1px border-[#E2E8F0].",
+    "image_overlays": "Max bg-black/40. For hero text contrast, prefer bg-gradient-to-t from-black/80 to-transparent instead of a flat heavy overlay."
+  },
+  "components": {
+    "buttons": "Sharp corners (rounded-none). Primary: bg-[#0284C7] text-white hover:bg-[#0369A1] hover:text-white. Secondary: border border-[#E2E8F0] bg-transparent text-[#0A0F1C] hover:bg-[#F8FAFC].",
+    "inputs": "Shadcn components heavily customized: rounded-none, border-[#E2E8F0], focus:ring-2 focus:ring-[#0284C7]/20.",
+    "tabs": "Shadcn tabs, customized with h-auto and bottom-border active state (magazine style) instead of pill backgrounds.",
+    "article_tags": "Small, uppercase, tracking-wider, bg-[#F1F5F9] text-[#475569] px-2 py-1 rounded-sm text-xs font-semibold."
+  },
+  "motion_and_interactions": {
+    "hover_states": "All interactive elements must explicitly change state. Images inside article cards should slightly scale up (scale-105) on hover with overflow-hidden on parent wrapper.",
+    "page_transitions": "Smooth fade in.",
+    "scrolling": "Use lenis for smooth premium momentum scrolling.",
+    "accessibility": "Always include focus states (focus:ring-2 focus:ring-offset-2). `data-testid` attributes are MANDATORY for all actionable/interactive elements."
+  },
+  "image_urls": {
+    "hero_backgrounds": [
+      {
+        "url": "https://static.prod-images.emergentagent.com/jobs/e052bca8-dbf8-4933-8039-fac54198bda4/images/33a3746a2a17f384af0b69ccb9800deb2d00f489a5f409ef34e431aca541eed9.png",
+        "description": "Vibrant coral reef hero",
+        "category": "hero"
+      },
+      {
+        "url": "https://static.prod-images.emergentagent.com/jobs/e052bca8-dbf8-4933-8039-fac54198bda4/images/0dbc67ceb13d3642219dbc16d93d6d9d81e8d11cf088495e0124ef1fc8f660b5.png",
+        "description": "Abstract ocean background, mostly white",
+        "category": "background_texture"
+      }
+    ],
+    "gear_and_photography": [
+      {
+        "url": "https://static.prod-images.emergentagent.com/jobs/e052bca8-dbf8-4933-8039-fac54198bda4/images/24eff4407ef00897f0c1d1e4036c6158f07f8167c9fe957e6b521f2f0eecd323.png",
+        "description": "Sleek scuba gear flatlay",
+        "category": "gear_article"
+      }
+    ],
+    "marine_life_and_divers": [
+      {
+        "url": "https://images.unsplash.com/photo-1548065822-2cd6b99550f8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MjJ8MHwxfHNlYXJjaHw0fHxzY3ViYSUyMGRpdmVyJTIwdW5kZXJ3YXRlcnxlbnwwfHx8fDE3Nzc3MTEzOTJ8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Scuba diver underwater",
+        "category": "article_thumbnail"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1628371190872-df8c9dee1093?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MjJ8MHwxfHNlYXJjaHwxfHxzY3ViYSUyMGRpdmVyJTIwdW5kZXJ3YXRlcnxlbnwwfHx8fDE3Nzc3MTEzOTJ8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Diver in black suit",
+        "category": "article_thumbnail"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1623409300746-1e96643dbdb4?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTN8MHwxfHNlYXJjaHwyfHx1bmRlcndhdGVyJTIwbWFyaW5lJTIwbGlmZSUyMHR1cnRsZXxlbnwwfHx8fDE3Nzc3MTEzOTJ8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Close up of sea turtle",
+        "category": "article_thumbnail"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1631102403791-8e33d9be6603?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTN8MHwxfHNlYXJjaHwxfHx1bmRlcndhdGVyJTIwbWFyaW5lJTIwbGlmZSUyMHR1cnRsZXxlbnwwfHx8fDE3Nzc3MTEzOTJ8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Sea turtle swimming",
+        "category": "destinations_thumbnail"
+      }
+    ],
+    "placeholders": [
+      {
+        "url": "https://static.prod-images.emergentagent.com/jobs/e052bca8-dbf8-4933-8039-fac54198bda4/images/0dbc67ceb13d3642219dbc16d93d6d9d81e8d11cf088495e0124ef1fc8f660b5.png",
+        "description": "Google AdSense Placeholder image (use this abstract light ocean texture with 'Advertisement' text overlay in gray color)",
+        "category": "adsense_placeholder"
+      }
+    ]
+  },
+  "pages": {
+    "Home": {
+      "layout": "Editorial Magazine Style. Header with Crystal Glass. 'Above the fold' is a massive CSS Grid: One main Hero Article spanning 8 cols, with 3 trending articles stacked in 4 cols. Minimalist white background.",
+      "sections": [
+        "Navigation Bar: Logo left, Links center, Socials right.",
+        "Hero Article Grid: 1 Main Story (Coral Reef Hero) + 3 Side Stories.",
+        "Latest News Feed: Vertical list of articles with thumbnails and an adjoining Sidebar for Popular Articles.",
+        "Google AdSense Placeholder (Full width banner).",
+        "Destinations Showcase: Horizontal scroll or 3-column bento.",
+        "Gear Reviews: Sleek card layouts.",
+        "Photography Gallery: Masonry grid.",
+        "Community & Stories: Interactive layout with Instagram embeds and Google Maps for popular dive spots.",
+        "Footer: Very tall (py-24), dark background (#0A0F1C) for high contrast end of page."
+      ]
+    },
+    "CMS_Dashboard": {
+      "path": "/forinternalonly/",
+      "layout": "Sleek, white background, minimalist. Zenith Dashboard style.",
+      "features": "Sidebar navigation. Data tables for Articles (Shadcn Table), User Role Management, TinyMCE integration for article editing, SEO Meta fields in forms."
+    }
+  },
+  "instructions_to_main_agent": [
+    "Use Phosphor Icons (@phosphor-icons/react) for a premium editorial look.",
+    "Do NOT use HTML inputs, strictly use heavily customized Shadcn UI components.",
+    "Implement pure HTML+Tailwind CSS for complex layout asymmetries on the homepage instead of standard container/cards.",
+    "Ensure the hero images do not have muddy dark overlays; use gradient overlays only where text needs contrast.",
+    "Every actionable item MUST have a data-testid attribute.",
+    "For Google AdSense blocks, use the abstract ocean background image from the placeholders section with 'Advertisement' text centered."
+  ]
+}
