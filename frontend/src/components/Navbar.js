@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ShoppingBag, Camera, GraduationCap, Users, Newspaper, MapPin } from '@phosphor-icons/react';
+import { settingsAPI } from '../utils/api';
+
+const DEFAULT_LOGO = 'https://customer-assets.emergentagent.com/job_e052bca8-dbf8-4933-8039-fac54198bda4/artifacts/kazh3wbj_243CB557-2CF0-4CAF-8C04-44D9C97272E7_1_105_c.jpeg';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
+  const [logoUrl, setLogoUrl] = useState(DEFAULT_LOGO);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -13,6 +17,21 @@ const Navbar = () => {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    // Fetch logo from settings
+    const fetchLogo = async () => {
+      try {
+        const response = await settingsAPI.get();
+        if (response.data.logo_url) {
+          setLogoUrl(response.data.logo_url);
+        }
+      } catch (error) {
+        console.log('Using default logo');
+      }
+    };
+    fetchLogo();
   }, []);
 
   const navLinks = [
@@ -35,7 +54,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 cursor-pointer" data-testid="logo-link">
             <img
-              src="https://customer-assets.emergentagent.com/job_e052bca8-dbf8-4933-8039-fac54198bda4/artifacts/kazh3wbj_243CB557-2CF0-4CAF-8C04-44D9C97272E7_1_105_c.jpeg"
+              src={logoUrl}
               alt="ScubaPlaydate Logo"
               className="h-16 w-16 object-contain"
               style={{ background: 'transparent' }}

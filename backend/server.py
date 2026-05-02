@@ -129,6 +129,7 @@ class Settings(BaseModel):
     model_config = ConfigDict(extra="ignore")
     google_analytics_id: Optional[str] = None
     google_adsense_id: Optional[str] = None
+    logo_url: Optional[str] = None
 
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)

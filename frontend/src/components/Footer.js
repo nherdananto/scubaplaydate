@@ -14,7 +14,7 @@ const Footer = () => {
             />
             <h3 className="text-2xl font-bold mb-2">ScubaPlaydate</h3>
             <p className="text-[#94A3B8] text-sm leading-relaxed">
-              Your casual scuba news + lifestyle + underwater photography + diving culture.
+              Scuba stories, style, and underwater culture.
             </p>
           </div>
 
