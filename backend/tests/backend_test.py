@@ -5,8 +5,8 @@ import pytest
 import requests
 
 BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://plunge-daily.preview.emergentagent.com").rstrip("/")
-ADMIN_EMAIL = "admin@scubaplaydate.com"
-ADMIN_PASSWORD = "Admin123!"
+ADMIN_EMAIL = os.environ.get("TEST_ADMIN_EMAIL", "admin@scubaplaydate.com")
+ADMIN_PASSWORD = os.environ.get("TEST_ADMIN_PASSWORD", "Admin123!")
 
 created_ids = {"users": [], "articles": [], "banners": [], "categories": []}
 
@@ -82,7 +82,8 @@ def test_article_crud(admin_headers):
     assert r.status_code == 200, r.text
     aid = r.json()["id"]
     created_ids["articles"].append(aid)
-    assert r.json()["title"] == "TEST Article" and r.json()["featured"] is True
+    body = r.json()
+    assert body["title"] == "TEST Article" and body["featured"]
 
     # GET by id
     r = requests.get(f"{BASE_URL}/api/articles/{aid}")

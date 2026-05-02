@@ -30,7 +30,7 @@ const Navbar = () => {
           setLogoUrl(response.data.logo_url);
         }
       } catch (error) {
-        console.log('Using default logo');
+        // silently fall back to default logo
       }
     };
     fetchLogo();

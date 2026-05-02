@@ -73,7 +73,7 @@ const CMSArticleEditor = () => {
       const response = await articlesAPI.list({ limit: 200, status: 'published' });
       setAllArticles(response.data);
     } catch (error) {
-      console.log('Failed to load articles for selection');
+      // non-blocking: list of related articles is optional
     }
   };
 
@@ -187,7 +187,7 @@ const CMSArticleEditor = () => {
                 <Label>Content (English) *</Label>
                 <div className="mt-2">
                   <Editor
-                    apiKey="8at83rd9smyi9qk4fuip7ofag7egov9mez24zp89l7qv31h6"
+                    apiKey={process.env.REACT_APP_TINYMCE_API_KEY}
                     onInit={(evt, editor) => (editorEnRef.current = editor)}
                     initialValue={formData.content_html}
                     init={{
@@ -241,7 +241,7 @@ const CMSArticleEditor = () => {
                 <Label>Konten (Bahasa Indonesia) *</Label>
                 <div className="mt-2">
                   <Editor
-                    apiKey="8at83rd9smyi9qk4fuip7ofag7egov9mez24zp89l7qv31h6"
+                    apiKey={process.env.REACT_APP_TINYMCE_API_KEY}
                     onInit={(evt, editor) => (editorIdRef.current = editor)}
                     initialValue={formData.content_html_id}
                     init={{
