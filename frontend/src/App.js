@@ -16,12 +16,14 @@ import CMSUsers from './pages/cms/CMSUsers';
 import CMSBanners from './pages/cms/CMSBanners';
 import CMSSettings from './pages/cms/CMSSettings';
 import { Toaster } from './components/ui/sonner';
+import GoogleAnalytics from './components/GoogleAnalytics';
 
 function App() {
   return (
     <div className="App">
       <Toaster position="top-right" />
       <BrowserRouter>
+        <GoogleAnalytics />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/news" element={<NewsPage />} />

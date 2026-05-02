@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import SocialShare from '../components/SocialShare';
 import { articlesAPI } from '../utils/api';
 import { Calendar, User, Tag } from '@phosphor-icons/react';
 
@@ -59,15 +60,22 @@ const ArticleDetail = () => {
             </h2>
           </div>
 
-          <div className="flex items-center gap-6 text-sm text-[#64748B] mb-8 pb-8 border-b border-[#E2E8F0]">
-            <div className="flex items-center gap-2">
-              <User size={16} weight="bold" />
-              <span>{article.author_name}</span>
+          <div className="flex items-center justify-between mb-8 pb-8 border-b border-[#E2E8F0]">
+            <div className="flex items-center gap-6 text-sm text-[#64748B]">
+              <div className="flex items-center gap-2">
+                <User size={16} weight="bold" />
+                <span>{article.author_name}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Calendar size={16} weight="bold" />
+                <span>{new Date(article.created_at).toLocaleDateString()}</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Calendar size={16} weight="bold" />
-              <span>{new Date(article.created_at).toLocaleDateString()}</span>
-            </div>
+            <SocialShare 
+              url={window.location.href}
+              title={article.title}
+              description={article.h2_subtitle}
+            />
           </div>
 
           {article.featured_image && (
