@@ -5,6 +5,7 @@ from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
+import re
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict, EmailStr
 from typing import List, Optional
@@ -240,7 +241,13 @@ async def list_articles(
     if category:
         query["category"] = category
     if subcategory:
-        query["subcategory"] = subcategory
+        # Case-insensitive exact match so lowercased URL slugs (e.g. "indonesia",
+        # "marine life") still match DB values stored in proper case ("Indonesia",
+        # "Marine Life").
+        query["subcategory"] = {
+            "$regex": f"^{re.escape(subcategory)}$",
+            "$options": "i",
+        }
     if status:
         query["status"] = status
     if featured is not None:
