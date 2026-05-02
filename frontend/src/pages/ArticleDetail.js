@@ -6,6 +6,7 @@ import SocialShare from '../components/SocialShare';
 import { articlesAPI } from '../utils/api';
 import { Calendar, User, Tag } from '@phosphor-icons/react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { sanitizeArticleHTML } from '../utils/sanitizeContent';
 
 const ArticleDetail = () => {
   const { slug } = useParams();
@@ -96,7 +97,7 @@ const ArticleDetail = () => {
 
           <div
             className="article-content text-base text-[#475569] leading-relaxed"
-            dangerouslySetInnerHTML={{ __html: content }}
+            dangerouslySetInnerHTML={{ __html: sanitizeArticleHTML(content) }}
           />
         </div>
 

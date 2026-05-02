@@ -193,11 +193,17 @@ const CMSArticleEditor = () => {
                     init={{
                       height: 400,
                       menubar: false,
-                      plugins: ['lists', 'link', 'image', 'code'],
-                      toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image | code',
+                      plugins: ['lists', 'link', 'image', 'media', 'code', 'autolink'],
+                      toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image media | code',
+                      media_live_embeds: true,
+                      media_alt_source: false,
+                      media_poster: false,
                     }}
                   />
                 </div>
+                <p className="text-xs text-[#64748B] mt-2">
+                  Tip: For YouTube/Instagram, click the <strong>Insert/edit media</strong> button or paste a video URL on its own line — it auto-embeds when published.
+                </p>
               </div>
             </div>
           </div>
@@ -241,8 +247,11 @@ const CMSArticleEditor = () => {
                     init={{
                       height: 400,
                       menubar: false,
-                      plugins: ['lists', 'link', 'image', 'code'],
-                      toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image | code',
+                      plugins: ['lists', 'link', 'image', 'media', 'code', 'autolink'],
+                      toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image media | code',
+                      media_live_embeds: true,
+                      media_alt_source: false,
+                      media_poster: false,
                     }}
                   />
                 </div>

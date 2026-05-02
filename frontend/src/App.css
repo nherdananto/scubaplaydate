@@ -48,6 +48,33 @@ code, pre {
   color: #0369A1;
 }
 
+/* Responsive embeds (YouTube, Vimeo, Maps, etc.) */
+.article-content .embed-responsive {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 */
+  margin: 1.5rem 0;
+  background: #0A0F1C;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.article-content .embed-responsive iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+/* Instagram embeds are taller — use a portrait aspect */
+.article-content .embed-responsive.embed-instagram {
+  padding-bottom: 0;
+  height: 720px;
+  max-width: 540px;
+  margin-left: auto;
+  margin-right: auto;
+  background: transparent;
+}
+
 .smooth-scroll {
   scroll-behavior: smooth;
 }
