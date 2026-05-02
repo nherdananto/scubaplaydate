@@ -11,6 +11,7 @@ import PhotographyPage from './pages/PhotographyPage';
 import CommunityPage from './pages/CommunityPage';
 import ContributePage from './pages/ContributePage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import AboutPage from './pages/AboutPage';
 import CMSLogin from './pages/cms/CMSLogin';
 import CMSDashboard from './pages/cms/CMSDashboard';
 import CMSArticles from './pages/cms/CMSArticles';
@@ -64,6 +65,7 @@ function App() {
           <Route path="/community/:subcategory" element={<CommunityPage />} />
           <Route path="/contribute" element={<ContributePage />} />
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
+          <Route path="/about" element={<AboutPage />} />
           <Route path="/article/:slug" element={<ArticleDetail />} />
           
           <Route path="/forinternalonly" element={<CMSLogin />} />

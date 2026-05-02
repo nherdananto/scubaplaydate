@@ -95,9 +95,9 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <a href="#about" className="text-sm text-[#94A3B8] hover:text-white transition-colors" data-testid="footer-about">
+                <Link to="/about" className="text-sm text-[#94A3B8] hover:text-white transition-colors" data-testid="footer-about">
                   About Us
-                </a>
+                </Link>
               </li>
               <li>
                 <Link to="/privacy" className="text-sm text-[#94A3B8] hover:text-white transition-colors" data-testid="footer-privacy">
