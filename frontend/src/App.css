@@ -1,34 +1,53 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+@import url('https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;600;700;800;900&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+.App {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Cabinet Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+code, pre {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
 }
 
-.App-link {
-    color: #61dafb;
+.hero-gradient-overlay {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+.article-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 2px;
+}
+
+.article-content h3 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.article-content p {
+  margin-bottom: 1rem;
+  line-height: 1.75;
+}
+
+.article-content ul, .article-content ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.article-content a {
+  color: #0284C7;
+  text-decoration: underline;
+}
+
+.article-content a:hover {
+  color: #0369A1;
+}
+
+.smooth-scroll {
+  scroll-behavior: smooth;
 }
