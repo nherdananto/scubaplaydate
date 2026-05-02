@@ -123,20 +123,29 @@ const CMSBanners = () => {
                   <Label>Image</Label>
                   <Input type="file" accept="image/*" onChange={handleImageUpload} className="mt-1 rounded-none" data-testid="banner-image-upload" />
                   {formData.image_url && <img src={formData.image_url} alt="Banner" className="w-full h-32 object-cover mt-2 border border-[#E2E8F0] rounded-sm" />}
+                  <p className="text-xs text-[#94A3B8] mt-2">
+                    Recommended sizes: 
+                    <span className="block mt-1">• Sidebar: 300x250px or 300x600px</span>
+                    <span className="block">• Bottom: 728x90px or 970x90px (full width)</span>
+                  </p>
                 </div>
                 <div>
-                  <Label>Link URL</Label>
+                  <Label>Link URL (Optional)</Label>
                   <Input value={formData.link_url} onChange={(e) => setFormData({ ...formData, link_url: e.target.value })} className="mt-1 rounded-none" placeholder="https://example.com" data-testid="banner-link-input" />
+                  <p className="text-xs text-[#94A3B8] mt-1">Where users will be redirected when clicking the banner</p>
                 </div>
                 <div>
                   <Label>Position</Label>
                   <Select value={formData.position} onValueChange={(value) => setFormData({ ...formData, position: value })}>
                     <SelectTrigger className="rounded-none" data-testid="banner-position-select"><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="sidebar">Sidebar</SelectItem>
-                      <SelectItem value="bottom">Bottom</SelectItem>
+                      <SelectItem value="sidebar">Sidebar (Right side of homepage)</SelectItem>
+                      <SelectItem value="bottom">Bottom (Full width before footer)</SelectItem>
                     </SelectContent>
                   </Select>
+                  <p className="text-xs text-[#94A3B8] mt-1">
+                    {formData.position === 'sidebar' ? 'Appears on the right sidebar of the homepage' : 'Appears full-width above the footer on all pages'}
+                  </p>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Checkbox id="active" checked={formData.active} onCheckedChange={(checked) => setFormData({ ...formData, active: checked })} data-testid="banner-active-checkbox" />
