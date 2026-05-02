@@ -51,3 +51,10 @@ code, pre {
 .smooth-scroll {
   scroll-behavior: smooth;
 }
+
+/* Hide Made with Emergent badge */
+[href*="emergentagent.com"]:has(svg),
+a[href*="emergent.sh"]:has(svg),
+div[style*="position: fixed"][style*="bottom"]:has([href*="emergent"]) {
+  display: none !important;
+}

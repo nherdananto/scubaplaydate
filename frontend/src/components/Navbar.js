@@ -16,7 +16,6 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: 'Home', path: '/' },
     { name: 'News', path: '/news', icon: Newspaper },
     { name: 'Destinations', path: '/destinations', icon: MapPin },
     { name: 'Gear', path: '/gear', icon: ShoppingBag },
@@ -34,13 +33,14 @@ const Navbar = () => {
     >
       <div className="px-6 md:px-12 lg:px-24 py-4">
         <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3" data-testid="logo-link">
+          <Link to="/" className="flex items-center gap-3 cursor-pointer" data-testid="logo-link">
             <img
               src="https://customer-assets.emergentagent.com/job_e052bca8-dbf8-4933-8039-fac54198bda4/artifacts/kazh3wbj_243CB557-2CF0-4CAF-8C04-44D9C97272E7_1_105_c.jpeg"
               alt="ScubaPlaydate Logo"
-              className="h-12 w-12 object-contain"
+              className="h-16 w-16 object-contain"
+              style={{ background: 'transparent' }}
             />
-            <span className="text-2xl font-black text-[#0284C7] tracking-tight">
+            <span className="text-2xl font-black text-[#0284C7] tracking-tight hover:text-[#0369A1] transition-colors">
               ScubaPlaydate
             </span>
           </Link>

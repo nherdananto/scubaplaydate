@@ -50,3 +50,14 @@ code {
     @apply bg-background text-foreground;
   }
 }
+
+/* Hide Made with Emergent badge */
+body > div[style*="position: fixed"],
+body > div[style*="bottom"],
+body > a[style*="position: fixed"] {
+  display: none !important;
+}
+
+div[style*="z-index: 999999"] {
+  display: none !important;
+}

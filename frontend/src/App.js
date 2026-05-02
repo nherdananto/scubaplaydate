@@ -1,5 +1,6 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
 import Home from './pages/Home';
 import ArticleDetail from './pages/ArticleDetail';
 import NewsPage from './pages/NewsPage';
@@ -19,6 +20,25 @@ import { Toaster } from './components/ui/sonner';
 import GoogleAnalytics from './components/GoogleAnalytics';
 
 function App() {
+  useEffect(() => {
+    // Remove "Made with Emergent" badge
+    const removeBadge = () => {
+      const badges = document.querySelectorAll('a[href*="emergent"], div[style*="position: fixed"]');
+      badges.forEach(badge => {
+        const text = badge.textContent || '';
+        if (text.includes('Made with') || text.includes('Emergent')) {
+          badge.remove();
+        }
+      });
+    };
+    
+    // Run immediately and on interval
+    removeBadge();
+    const interval = setInterval(removeBadge, 1000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="App">
       <Toaster position="top-right" />
