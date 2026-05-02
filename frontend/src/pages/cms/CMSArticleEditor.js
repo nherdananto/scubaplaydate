@@ -45,6 +45,22 @@ const CMSArticleEditor = () => {
     editorRef.current?.focus();
   };
 
+  const handleEditorBlur = () => {
+    if (editorRef.current) {
+      setFormData({ ...formData, content_html: editorRef.current.innerHTML });
+    }
+  };
+
+  const handleEditorInit = () => {
+    if (editorRef.current && formData.content_html) {
+      editorRef.current.innerHTML = formData.content_html;
+    }
+  };
+
+  useEffect(() => {
+    handleEditorInit();
+  }, [id]);
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -274,9 +290,9 @@ const CMSArticleEditor = () => {
               <div
                 ref={editorRef}
                 contentEditable
+                suppressContentEditableWarning
                 className="min-h-[400px] p-4 focus:outline-none prose max-w-none"
-                dangerouslySetInnerHTML={{ __html: formData.content_html }}
-                onInput={(e) => setFormData({ ...formData, content_html: e.currentTarget.innerHTML })}
+                onBlur={handleEditorBlur}
                 style={{ fontFamily: 'Manrope, Arial, sans-serif', fontSize: '16px', lineHeight: '1.6' }}
               />
             </div>
