@@ -33,7 +33,7 @@ JWT_SECRET = os.environ.get('JWT_SECRET', 'scubaplaydate_secret_key_2025')
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = 72
 
-UPLOAD_DIR = Path("/app/frontend/public/uploads")
+UPLOAD_DIR = Path(os.environ.get('UPLOAD_DIR', str(ROOT_DIR.parent / 'frontend' / 'public' / 'uploads')))
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 ALLOWED_IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp', '.gif'}

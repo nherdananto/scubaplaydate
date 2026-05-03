@@ -130,6 +130,10 @@ source venv/bin/activate
 pip install --upgrade pip wheel
 pip install -r requirements.txt
 deactivate
+
+# Ensure uploads dir exists and is writable by the service user
+sudo mkdir -p /var/www/scubaplaydate/frontend/public/uploads
+sudo chown -R www-data:www-data /var/www/scubaplaydate
 ```
 
 ### 5a. Production `.env`
@@ -140,6 +144,7 @@ MONGO_URL=mongodb://127.0.0.1:27017
 DB_NAME=scubaplaydate
 CORS_ORIGINS=https://scubaplaydate.com,https://www.scubaplaydate.com
 JWT_SECRET=CHANGE_ME_TO_A_LONG_RANDOM_STRING
+UPLOAD_DIR=/var/www/scubaplaydate/frontend/public/uploads
 EOF
 
 # Generate a strong JWT secret, then paste it in
@@ -391,6 +396,7 @@ No shared state. Restarting one service has zero impact on the other.
 
 | Symptom | Cause | Fix |
 |---|---|---|
+| `PermissionError: [Errno 13] Permission denied: '/app'` in service logs | Old `UPLOAD_DIR` hardcoded to `/app/...` | Add `UPLOAD_DIR=/var/www/scubaplaydate/frontend/public/uploads` to `backend/.env`, restart the service |
 | `502 Bad Gateway` on `scubaplaydate.com/api/*` | ScubaPlaydate backend down | `sudo journalctl -u scubaplaydate-backend -n 100` |
 | **oceamordive suddenly 502** | You accidentally edited its nginx block or its systemd service | `sudo nginx -T` → diff against backup; `sudo systemctl status <oceamordive-service>` |
 | Port 8002 already in use | Something else grabbed it | `sudo ss -tlnp \| grep 8002` → kill or pick 8003 and update the service + nginx |
