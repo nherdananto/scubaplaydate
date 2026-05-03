@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+// Same-origin by default (works on any domain the app is deployed to).
+// Only set REACT_APP_BACKEND_URL if the API lives on a different origin
+// (cross-origin dev setups).
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 export const API_URL = `${BACKEND_URL}/api`;
 
 export const api = axios.create({

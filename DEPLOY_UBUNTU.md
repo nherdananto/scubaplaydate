@@ -396,6 +396,8 @@ No shared state. Restarting one service has zero impact on the other.
 
 | Symptom | Cause | Fix |
 |---|---|---|
+| Site on production calls `plunge-daily.preview.emergentagent.com` and dies when preview is off | Frontend was built with `REACT_APP_BACKEND_URL=https://plunge-daily...` baked in | On server: `cd /var/www/scubaplaydate/frontend && sed -i 's|^REACT_APP_BACKEND_URL=.*|REACT_APP_BACKEND_URL=|' .env.production && yarn build && sudo systemctl reload nginx` |
+| Uploaded image works in CMS preview but 404s on live site | Image was uploaded to the Emergent preview pod's disk, not your server | Uploads must be done on the deployed site. After deploy, upload images via `https://scubaplaydate.com/forinternalonly/...` — they'll land in `/var/www/scubaplaydate/frontend/public/uploads/` |
 | `PermissionError: [Errno 13] Permission denied: '/app'` in service logs | Old `UPLOAD_DIR` hardcoded to `/app/...` | Add `UPLOAD_DIR=/var/www/scubaplaydate/frontend/public/uploads` to `backend/.env`, restart the service |
 | `502 Bad Gateway` on `scubaplaydate.com/api/*` | ScubaPlaydate backend down | `sudo journalctl -u scubaplaydate-backend -n 100` |
 | **oceamordive suddenly 502** | You accidentally edited its nginx block or its systemd service | `sudo nginx -T` → diff against backup; `sudo systemctl status <oceamordive-service>` |
