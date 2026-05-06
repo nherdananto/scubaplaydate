@@ -5,11 +5,17 @@ import Footer from '../components/Footer';
 import { articlesAPI } from '../utils/api';
 import { Camera } from '@phosphor-icons/react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 
 const PhotographyPage = () => {
   const { subcategory } = useParams();
   const [articles, setArticles] = useState([]);
   const { language, t } = useLanguage();
+  const subcatLabel = subcategory ? subcategory.charAt(0).toUpperCase() + subcategory.slice(1) : null;
+  useDocumentMeta({
+    title: subcatLabel ? `Underwater Photography ${subcatLabel}` : 'Underwater Photography',
+    description: 'Underwater photography tutorials, gear guides, and stunning marine life imagery.',
+  });
   const subcategories = [
     { value: 'Tutorials', key: 'tutorials' },
     { value: 'Gear', key: 'gear' },

@@ -2,6 +2,7 @@ import React from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { EnvelopeSimple } from '@phosphor-icons/react';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 
 const CONTACT_EMAIL = 'boolixious@gmail.com';
 const LAST_UPDATED = 'May 2026';
@@ -24,6 +25,10 @@ const BulletList = ({ items }) => (
 );
 
 const PrivacyPolicyPage = () => {
+  useDocumentMeta({
+    title: 'Privacy Policy',
+    description: 'How ScubaPlaydate collects, uses, and protects your information.',
+  });
   return (
     <div data-testid="privacy-policy-page" className="bg-white">
       <Navbar />

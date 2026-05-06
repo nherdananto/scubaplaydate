@@ -145,6 +145,7 @@ DB_NAME=scubaplaydate
 CORS_ORIGINS=https://scubaplaydate.com,https://www.scubaplaydate.com
 JWT_SECRET=CHANGE_ME_TO_A_LONG_RANDOM_STRING
 UPLOAD_DIR=/var/www/scubaplaydate/frontend/public/uploads
+SITE_URL=https://scubaplaydate.com
 EOF
 
 # Generate a strong JWT secret, then paste it in
@@ -240,6 +241,14 @@ server {
         access_log off;
         expires 30d;
         add_header Cache-Control "public, max-age=2592000";
+    }
+
+    # Dynamic sitemap → backend (lists all published articles)
+    location = /sitemap.xml {
+        proxy_pass         http://127.0.0.1:8002/api/sitemap.xml;
+        proxy_set_header   Host              $host;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+        proxy_set_header   X-Forwarded-Host  $host;
     }
 
     # API → FastAPI on 127.0.0.1:8002 (NOT 8001 — that's oceamordive)

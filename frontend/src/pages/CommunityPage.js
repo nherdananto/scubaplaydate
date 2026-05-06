@@ -5,11 +5,17 @@ import Footer from '../components/Footer';
 import { articlesAPI } from '../utils/api';
 import { Users } from '@phosphor-icons/react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 
 const CommunityPage = () => {
   const { subcategory } = useParams();
   const [articles, setArticles] = useState([]);
   const { language, t } = useLanguage();
+  const subcatLabel = subcategory ? subcategory.charAt(0).toUpperCase() + subcategory.slice(1) : null;
+  useDocumentMeta({
+    title: subcatLabel ? `Diver ${subcatLabel}` : 'Diver Community',
+    description: 'Real diver stories, interviews, and underwater encounters from divers around the world.',
+  });
   const subcategories = [
     { value: 'Stories', key: 'stories' },
     { value: 'Interviews', key: 'interviews' },

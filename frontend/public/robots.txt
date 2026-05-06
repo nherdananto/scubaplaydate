@@ -1,0 +1,50 @@
+# ScubaPlaydate.com — robots policy
+
+# Default: all crawlers (Googlebot, Bingbot, etc.) are welcome on public pages.
+User-agent: *
+Allow: /
+Disallow: /forinternalonly/
+Disallow: /api/
+
+# AI crawlers — explicitly welcomed on public content
+User-agent: GPTBot
+Allow: /
+Disallow: /forinternalonly/
+Disallow: /api/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /forinternalonly/
+Disallow: /api/
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /forinternalonly/
+Disallow: /api/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /forinternalonly/
+Disallow: /api/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /forinternalonly/
+Disallow: /api/
+
+User-agent: CCBot
+Allow: /
+Disallow: /forinternalonly/
+Disallow: /api/
+
+User-agent: Bytespider
+Allow: /
+Disallow: /forinternalonly/
+Disallow: /api/
+
+User-agent: Applebot
+Allow: /
+Disallow: /forinternalonly/
+Disallow: /api/
+
+Sitemap: https://scubaplaydate.com/sitemap.xml

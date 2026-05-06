@@ -5,11 +5,17 @@ import Footer from '../components/Footer';
 import { articlesAPI } from '../utils/api';
 import { ShoppingBag } from '@phosphor-icons/react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 
 const GearPage = () => {
   const { subcategory } = useParams();
   const [articles, setArticles] = useState([]);
   const { language, t } = useLanguage();
+  const subcatLabel = subcategory ? subcategory.charAt(0).toUpperCase() + subcategory.slice(1) : null;
+  useDocumentMeta({
+    title: subcatLabel ? `${subcatLabel} Scuba Gear` : 'Scuba Gear',
+    description: 'Honest scuba gear reviews, comparisons, and recommendations from real divers.',
+  });
   const subcategories = [
     { value: 'Reviews', key: 'reviews' },
     { value: 'Comparisons', key: 'comparisons' },

@@ -1,4 +1,5 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, UploadFile, File, Form, status
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, UploadFile, File, Form, status, Request
+from fastapi.responses import Response
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -404,7 +405,78 @@ async def upload_file(file: UploadFile = File(...), current_user: User = Depends
     
     return {"url": f"/uploads/{filename}", "filename": filename}
 
+
+def _public_site_base(request: Request) -> str:
+    """Return the public site base URL for sitemap generation.
+    Prefers SITE_URL env var, otherwise infers from the request.
+    """
+    site = os.environ.get("SITE_URL")
+    if site:
+        return site.rstrip("/")
+    forwarded_host = request.headers.get("x-forwarded-host") or request.headers.get("host", "")
+    forwarded_proto = request.headers.get("x-forwarded-proto", "https")
+    return f"{forwarded_proto}://{forwarded_host}".rstrip("/")
+
+
+STATIC_SITEMAP_PATHS = [
+    ("/",              "daily",   "1.0"),
+    ("/news",          "daily",   "0.9"),
+    ("/destinations",  "weekly",  "0.8"),
+    ("/gear",          "weekly",  "0.8"),
+    ("/training",      "weekly",  "0.7"),
+    ("/photography",   "weekly",  "0.7"),
+    ("/community",     "weekly",  "0.7"),
+    ("/contribute",    "monthly", "0.5"),
+    ("/about",         "monthly", "0.5"),
+    ("/privacy",       "yearly",  "0.3"),
+]
+
+
+async def _build_sitemap(request: Request) -> str:
+    base = _public_site_base(request)
+    urls = []
+    for path, changefreq, priority in STATIC_SITEMAP_PATHS:
+        urls.append(
+            f"<url><loc>{base}{path}</loc>"
+            f"<changefreq>{changefreq}</changefreq>"
+            f"<priority>{priority}</priority></url>"
+        )
+    cursor = db.articles.find(
+        {"status": "published"},
+        {"_id": 0, "slug": 1, "updated_at": 1, "created_at": 1},
+    ).sort("created_at", -1).limit(5000)
+    async for art in cursor:
+        slug = art.get("slug")
+        if not slug:
+            continue
+        lastmod = art.get("updated_at") or art.get("created_at") or ""
+        if isinstance(lastmod, str) and len(lastmod) >= 10:
+            lastmod = lastmod[:10]
+        urls.append(
+            f"<url><loc>{base}/article/{slug}</loc>"
+            + (f"<lastmod>{lastmod}</lastmod>" if lastmod else "")
+            + "<changefreq>monthly</changefreq><priority>0.7</priority></url>"
+        )
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+        + "".join(urls)
+        + "</urlset>"
+    )
+
+
+@api_router.get("/sitemap.xml", include_in_schema=False)
+async def sitemap_xml_api(request: Request):
+    body = await _build_sitemap(request)
+    return Response(content=body, media_type="application/xml")
+
 app.include_router(api_router)
+
+
+@app.get("/sitemap.xml", include_in_schema=False)
+async def sitemap_xml(request: Request):
+    body = await _build_sitemap(request)
+    return Response(content=body, media_type="application/xml")
 
 app.add_middleware(
     CORSMiddleware,

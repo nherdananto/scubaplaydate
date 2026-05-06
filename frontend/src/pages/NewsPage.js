@@ -5,11 +5,17 @@ import Footer from '../components/Footer';
 import { articlesAPI } from '../utils/api';
 import { Newspaper } from '@phosphor-icons/react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 
 const NewsPage = () => {
   const { subcategory } = useParams();
   const [articles, setArticles] = useState([]);
   const { language, t } = useLanguage();
+  const subcatLabel = subcategory ? subcategory.charAt(0).toUpperCase() + subcategory.slice(1) : null;
+  useDocumentMeta({
+    title: subcatLabel ? `${subcatLabel} News` : 'News',
+    description: 'Latest scuba diving industry news, marine life discoveries, and conservation efforts.',
+  });
 
   const subcategories = [
     { value: 'Industry', key: 'industry' },

@@ -5,11 +5,17 @@ import Footer from '../components/Footer';
 import { articlesAPI } from '../utils/api';
 import { MapPin } from '@phosphor-icons/react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 
 const DestinationsPage = () => {
   const { subcategory } = useParams();
   const [articles, setArticles] = useState([]);
   const { language, t } = useLanguage();
+  const subcatLabel = subcategory ? subcategory.charAt(0).toUpperCase() + subcategory.slice(1) : null;
+  useDocumentMeta({
+    title: subcatLabel ? `${subcatLabel} Dive Destinations` : 'Dive Destinations',
+    description: "Discover the world's best dive destinations — from Indonesia's Coral Triangle to remote Pacific atolls.",
+  });
   const subcategories = [
     { value: 'Indonesia', key: 'indonesia' },
     { value: 'Asia', key: 'asia' },

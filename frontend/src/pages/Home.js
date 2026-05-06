@@ -5,6 +5,7 @@ import Footer from '../components/Footer';
 import { articlesAPI, bannersAPI } from '../utils/api';
 import { TrendUp } from '@phosphor-icons/react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 
 // Pick the correct localized field with fallback to English.
 const localized = (article, field, language) => {
@@ -22,6 +23,7 @@ const Home = () => {
   const [popularArticles, setPopularArticles] = useState([]);
   const [banners, setBanners] = useState([]);
   const { language, t } = useLanguage();
+  useDocumentMeta({});  // uses defaults — site-wide SEO
 
   useEffect(() => {
     loadData();

@@ -10,6 +10,7 @@ import {
   EnvelopeSimple,
   CheckCircle,
 } from '@phosphor-icons/react';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 
 const SUBMIT_EMAIL = 'boolixious@gmail.com';
 
@@ -77,6 +78,10 @@ const BulletList = ({ items, testIdPrefix }) => (
 );
 
 const ContributePage = () => {
+  useDocumentMeta({
+    title: 'Write for ScubaPlaydate',
+    description: 'Share your scuba diving stories, photography, gear reviews, and dive guides with the ScubaPlaydate community.',
+  });
   return (
     <div data-testid="contribute-page" className="bg-white">
       <Navbar />

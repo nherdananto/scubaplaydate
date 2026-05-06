@@ -19,6 +19,7 @@ import CMSArticleEditor from './pages/cms/CMSArticleEditor';
 import CMSUsers from './pages/cms/CMSUsers';
 import CMSBanners from './pages/cms/CMSBanners';
 import CMSSettings from './pages/cms/CMSSettings';
+import CmsRouteWrapper from './components/CmsRouteWrapper';
 import { Toaster } from './components/ui/sonner';
 import GoogleAnalytics from './components/GoogleAnalytics';
 import { LanguageProvider } from './contexts/LanguageContext';
@@ -68,14 +69,14 @@ function App() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/article/:slug" element={<ArticleDetail />} />
           
-          <Route path="/forinternalonly" element={<CMSLogin />} />
-          <Route path="/forinternalonly/dashboard" element={<CMSDashboard />} />
-          <Route path="/forinternalonly/articles" element={<CMSArticles />} />
-          <Route path="/forinternalonly/articles/new" element={<CMSArticleEditor />} />
-          <Route path="/forinternalonly/articles/edit/:id" element={<CMSArticleEditor />} />
-          <Route path="/forinternalonly/users" element={<CMSUsers />} />
-          <Route path="/forinternalonly/banners" element={<CMSBanners />} />
-          <Route path="/forinternalonly/settings" element={<CMSSettings />} />
+          <Route path="/forinternalonly" element={<CmsRouteWrapper><CMSLogin /></CmsRouteWrapper>} />
+          <Route path="/forinternalonly/dashboard" element={<CmsRouteWrapper><CMSDashboard /></CmsRouteWrapper>} />
+          <Route path="/forinternalonly/articles" element={<CmsRouteWrapper><CMSArticles /></CmsRouteWrapper>} />
+          <Route path="/forinternalonly/articles/new" element={<CmsRouteWrapper><CMSArticleEditor /></CmsRouteWrapper>} />
+          <Route path="/forinternalonly/articles/edit/:id" element={<CmsRouteWrapper><CMSArticleEditor /></CmsRouteWrapper>} />
+          <Route path="/forinternalonly/users" element={<CmsRouteWrapper><CMSUsers /></CmsRouteWrapper>} />
+          <Route path="/forinternalonly/banners" element={<CmsRouteWrapper><CMSBanners /></CmsRouteWrapper>} />
+          <Route path="/forinternalonly/settings" element={<CmsRouteWrapper><CMSSettings /></CmsRouteWrapper>} />
         </Routes>
       </BrowserRouter>
     </div>

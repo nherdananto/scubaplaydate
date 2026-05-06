@@ -12,6 +12,7 @@ import {
   Compass,
   ArrowRight,
 } from '@phosphor-icons/react';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 
 const CONTACT_EMAIL = 'boolixious@gmail.com';
 
@@ -41,6 +42,10 @@ const whatWeDo = [
 ];
 
 const AboutPage = () => {
+  useDocumentMeta({
+    title: 'About ScubaPlaydate',
+    description: 'ScubaPlaydate is a digital space for divers to explore, share, and stay connected with the underwater world.',
+  });
   return (
     <div data-testid="about-page" className="bg-white">
       <Navbar />

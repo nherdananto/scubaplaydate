@@ -7,6 +7,7 @@ import { articlesAPI } from '../utils/api';
 import { Calendar, User, Tag } from '@phosphor-icons/react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { sanitizeArticleHTML } from '../utils/sanitizeContent';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 
 const ArticleDetail = () => {
   const { slug } = useParams();
@@ -34,6 +35,35 @@ const ArticleDetail = () => {
     }
   };
 
+  const title = article && (language === 'id' && article.title_id ? article.title_id : article.title);
+  const subtitle = article && (language === 'id' && article.h2_subtitle_id ? article.h2_subtitle_id : article.h2_subtitle);
+  const content = article && (language === 'id' && article.content_html_id ? article.content_html_id : article.content_html);
+
+  useDocumentMeta({
+    title: article ? (article.seo_title || title) : null,
+    description: article ? (article.seo_description || subtitle) : null,
+    image: article ? article.featured_image : null,
+    type: 'article',
+    jsonLd: article
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'NewsArticle',
+          headline: title,
+          description: article.seo_description || subtitle,
+          image: article.featured_image ? [article.featured_image] : undefined,
+          datePublished: article.created_at,
+          dateModified: article.updated_at || article.created_at,
+          author: { '@type': 'Person', name: article.author_name },
+          publisher: {
+            '@type': 'Organization',
+            name: 'ScubaPlaydate',
+          },
+          articleSection: article.category,
+          keywords: article.seo_keywords,
+        }
+      : null,
+  });
+
   if (!article) {
     return (
       <div className="bg-white min-h-screen">
@@ -44,10 +74,6 @@ const ArticleDetail = () => {
       </div>
     );
   }
-
-  const title = language === 'id' && article.title_id ? article.title_id : article.title;
-  const subtitle = language === 'id' && article.h2_subtitle_id ? article.h2_subtitle_id : article.h2_subtitle;
-  const content = language === 'id' && article.content_html_id ? article.content_html_id : article.content_html;
 
   return (
     <div data-testid="article-detail-page" className="bg-white">
