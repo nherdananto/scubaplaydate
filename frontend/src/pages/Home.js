@@ -22,6 +22,7 @@ const Home = () => {
   const [latestNews, setLatestNews] = useState([]);
   const [popularArticles, setPopularArticles] = useState([]);
   const [banners, setBanners] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { language, t } = useLanguage();
   useDocumentMeta({});  // uses defaults — site-wide SEO
 
@@ -31,19 +32,19 @@ const Home = () => {
 
   const loadData = async () => {
     try {
-      const featured = await articlesAPI.list({ featured: true, status: 'published', limit: 4 });
+      const [featured, latest, popular, bannerData] = await Promise.all([
+        articlesAPI.list({ featured: true, status: 'published', limit: 4 }),
+        articlesAPI.list({ status: 'published', limit: 6 }),
+        articlesAPI.list({ status: 'published', limit: 5 }),
+        bannersAPI.list({ active: true }),
+      ]);
+
       if (featured.data.length > 0) {
         setHeroArticle(featured.data[0]);
         setTrendingArticles(featured.data.slice(1, 4));
       }
-
-      const latest = await articlesAPI.list({ status: 'published', limit: 6 });
       setLatestNews(latest.data);
-
-      const popular = await articlesAPI.list({ status: 'published', limit: 5 });
       setPopularArticles(popular.data);
-
-      const bannerData = await bannersAPI.list({ active: true });
       setBanners(bannerData.data);
 
       bannerData.data.forEach(banner => {
@@ -51,6 +52,8 @@ const Home = () => {
       });
     } catch (error) {
       console.error('Error loading data:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -62,6 +65,42 @@ const Home = () => {
     <div data-testid="home-page" className="bg-white">
       <Navbar />
 
+      {loading ? (
+        <div className="pt-20" data-testid="home-loading">
+          {/* Hero skeleton */}
+          <section className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-12">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+              <div className="md:col-span-8 h-[500px] rounded-sm bg-[#F1F5F9] animate-pulse" />
+              <div className="md:col-span-4 space-y-4">
+                <div className="h-[158px] rounded-sm bg-[#F1F5F9] animate-pulse" />
+                <div className="h-[158px] rounded-sm bg-[#F1F5F9] animate-pulse" />
+                <div className="h-[158px] rounded-sm bg-[#F1F5F9] animate-pulse" />
+              </div>
+            </div>
+          </section>
+          {/* Latest + sidebar skeleton */}
+          <section className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-16">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
+              <div className="md:col-span-8 space-y-6">
+                {[0, 1, 2].map((i) => (
+                  <div key={i} className="flex gap-6 pb-6 border-b border-[#E2E8F0]">
+                    <div className="w-48 h-32 flex-shrink-0 rounded-sm bg-[#F1F5F9] animate-pulse" />
+                    <div className="flex-1 space-y-3">
+                      <div className="h-3 w-24 rounded bg-[#F1F5F9] animate-pulse" />
+                      <div className="h-5 w-3/4 rounded bg-[#F1F5F9] animate-pulse" />
+                      <div className="h-4 w-full rounded bg-[#F1F5F9] animate-pulse" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="md:col-span-4 space-y-4">
+                <div className="h-[280px] rounded-sm bg-[#F1F5F9] animate-pulse" />
+                <div className="h-[200px] rounded-sm bg-[#F1F5F9] animate-pulse" />
+              </div>
+            </div>
+          </section>
+        </div>
+      ) : (
       <div className="pt-20">
         {heroArticle && (
           <section className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-12">
@@ -251,6 +290,7 @@ const Home = () => {
           </section>
         )}
       </div>
+      )}
 
       <Footer />
     </div>
