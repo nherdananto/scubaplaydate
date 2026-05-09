@@ -13,8 +13,12 @@ import {
   TableRow,
 } from '../../components/ui/table';
 
+const PAGE_SIZE = 20;
+
 const CMSArticles = () => {
   const [articles, setArticles] = useState([]);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,12 +28,18 @@ const CMSArticles = () => {
       return;
     }
     loadArticles();
-  }, [navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigate, page]);
 
   const loadArticles = async () => {
     try {
-      const response = await articlesAPI.list({ limit: 100 });
-      setArticles(response.data);
+      const skip = (page - 1) * PAGE_SIZE;
+      const [articlesRes, countRes] = await Promise.all([
+        articlesAPI.list({ skip, limit: PAGE_SIZE }),
+        articlesAPI.count(),
+      ]);
+      setArticles(articlesRes.data);
+      setTotal(countRes.data.total || 0);
     } catch (error) {
       toast.error('Failed to load articles');
     }
@@ -45,6 +55,8 @@ const CMSArticles = () => {
       toast.error('Failed to delete article');
     }
   };
+
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   return (
     <div data-testid="cms-articles-page" className="min-h-screen bg-white">
@@ -79,6 +91,7 @@ const CMSArticles = () => {
                 <TableHead>Category</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Featured</TableHead>
+                <TableHead>Views</TableHead>
                 <TableHead>Author</TableHead>
                 <TableHead>Created</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
@@ -97,6 +110,7 @@ const CMSArticles = () => {
                     </span>
                   </TableCell>
                   <TableCell>{article.featured ? 'Yes' : 'No'}</TableCell>
+                  <TableCell className="font-mono text-sm">{article.view_count || 0}</TableCell>
                   <TableCell>{article.author_name}</TableCell>
                   <TableCell>{new Date(article.created_at).toLocaleDateString()}</TableCell>
                   <TableCell className="text-right">
@@ -122,6 +136,40 @@ const CMSArticles = () => {
             </TableBody>
           </Table>
         </div>
+
+        {/* Pagination */}
+        {total > PAGE_SIZE && (
+          <div className="flex items-center justify-between mt-4">
+            <p className="text-sm text-[#64748B]" data-testid="cms-articles-pagination-info">
+              Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, total)} of {total}
+            </p>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={page === 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                className="rounded-none"
+                data-testid="cms-articles-prev"
+              >
+                Prev
+              </Button>
+              <span className="px-3 py-1 text-sm self-center">
+                Page {page} / {totalPages}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={page >= totalPages}
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                className="rounded-none"
+                data-testid="cms-articles-next"
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+        )}
 
         {articles.length === 0 && (
           <div className="text-center py-16 text-[#94A3B8]">

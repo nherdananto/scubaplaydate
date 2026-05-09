@@ -12,6 +12,7 @@ import CommunityPage from './pages/CommunityPage';
 import ContributePage from './pages/ContributePage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import AboutPage from './pages/AboutPage';
+import GalleryPage from './pages/GalleryPage';
 import CMSLogin from './pages/cms/CMSLogin';
 import CMSDashboard from './pages/cms/CMSDashboard';
 import CMSArticles from './pages/cms/CMSArticles';
@@ -19,6 +20,7 @@ import CMSArticleEditor from './pages/cms/CMSArticleEditor';
 import CMSUsers from './pages/cms/CMSUsers';
 import CMSBanners from './pages/cms/CMSBanners';
 import CMSSettings from './pages/cms/CMSSettings';
+import CMSMedia from './pages/cms/CMSMedia';
 import CmsRouteWrapper from './components/CmsRouteWrapper';
 import { Toaster } from './components/ui/sonner';
 import GoogleAnalytics from './components/GoogleAnalytics';
@@ -67,6 +69,7 @@ function App() {
           <Route path="/contribute" element={<ContributePage />} />
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/gallery" element={<GalleryPage />} />
           <Route path="/article/:slug" element={<ArticleDetail />} />
           
           <Route path="/forinternalonly" element={<CmsRouteWrapper><CMSLogin /></CmsRouteWrapper>} />
@@ -76,6 +79,7 @@ function App() {
           <Route path="/forinternalonly/articles/edit/:id" element={<CmsRouteWrapper><CMSArticleEditor /></CmsRouteWrapper>} />
           <Route path="/forinternalonly/users" element={<CmsRouteWrapper><CMSUsers /></CmsRouteWrapper>} />
           <Route path="/forinternalonly/banners" element={<CmsRouteWrapper><CMSBanners /></CmsRouteWrapper>} />
+          <Route path="/forinternalonly/media" element={<CmsRouteWrapper><CMSMedia /></CmsRouteWrapper>} />
           <Route path="/forinternalonly/settings" element={<CmsRouteWrapper><CMSSettings /></CmsRouteWrapper>} />
         </Routes>
       </BrowserRouter>

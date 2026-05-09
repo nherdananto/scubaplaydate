@@ -8,6 +8,7 @@ import { Calendar, User, Tag } from '@phosphor-icons/react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { sanitizeArticleHTML } from '../utils/sanitizeContent';
 import { useDocumentMeta } from '../hooks/useDocumentMeta';
+import BottomBanner from '../components/BottomBanner';
 
 const ArticleDetail = () => {
   const { slug } = useParams();
@@ -23,6 +24,11 @@ const ArticleDetail = () => {
     try {
       const response = await articlesAPI.getBySlug(slug);
       setArticle(response.data);
+
+      // Fire-and-forget view tracking (one increment per page load)
+      if (response.data && response.data.id) {
+        articlesAPI.trackView(response.data.id).catch(() => {});
+      }
 
       if (response.data.related_articles && response.data.related_articles.length > 0) {
         const related = await Promise.all(
@@ -155,6 +161,7 @@ const ArticleDetail = () => {
         )}
       </article>
 
+      <BottomBanner showPlaceholder={false} />
       <Footer />
     </div>
   );

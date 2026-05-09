@@ -6,6 +6,7 @@ import { articlesAPI } from '../utils/api';
 import { ShoppingBag } from '@phosphor-icons/react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useDocumentMeta } from '../hooks/useDocumentMeta';
+import BottomBanner from '../components/BottomBanner';
 
 const GearPage = () => {
   const { subcategory } = useParams();
@@ -73,6 +74,7 @@ const GearPage = () => {
         </div>
         {articles.length === 0 && <div className="text-center py-16"><p className="text-[#94A3B8]">{t('noArticles')}</p></div>}
       </div>
+      <BottomBanner showPlaceholder={false} />
       <Footer />
     </div>
   );

@@ -6,6 +6,7 @@ import { articlesAPI } from '../utils/api';
 import { Newspaper } from '@phosphor-icons/react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useDocumentMeta } from '../hooks/useDocumentMeta';
+import BottomBanner from '../components/BottomBanner';
 
 const NewsPage = () => {
   const { subcategory } = useParams();
@@ -120,6 +121,7 @@ const NewsPage = () => {
         )}
       </div>
 
+      <BottomBanner showPlaceholder={false} />
       <Footer />
     </div>
   );

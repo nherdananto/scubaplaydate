@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Newspaper, Users, Image, Gear, SignOut } from '@phosphor-icons/react';
+import { Newspaper, Users, Image, Gear, SignOut, Images } from '@phosphor-icons/react';
 import { Button } from '../../components/ui/button';
 import { settingsAPI } from '../../utils/api';
 
@@ -38,6 +38,7 @@ const CMSDashboard = () => {
 
   const menuItems = [
     { name: 'Articles', icon: Newspaper, path: '/forinternalonly/articles', testId: 'dashboard-articles' },
+    { name: 'Media Library', icon: Images, path: '/forinternalonly/media', testId: 'dashboard-media' },
     { name: 'Users', icon: Users, path: '/forinternalonly/users', testId: 'dashboard-users', adminOnly: true },
     { name: 'Banners', icon: Image, path: '/forinternalonly/banners', testId: 'dashboard-banners', adminOnly: true },
     { name: 'Settings', icon: Gear, path: '/forinternalonly/settings', testId: 'dashboard-settings', adminOnly: true },

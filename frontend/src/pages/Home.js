@@ -6,6 +6,7 @@ import { articlesAPI, bannersAPI } from '../utils/api';
 import { TrendUp } from '@phosphor-icons/react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useDocumentMeta } from '../hooks/useDocumentMeta';
+import BottomBanner from '../components/BottomBanner';
 
 // Pick the correct localized field with fallback to English.
 const localized = (article, field, language) => {
@@ -35,7 +36,7 @@ const Home = () => {
       const [featured, latest, popular, bannerData] = await Promise.all([
         articlesAPI.list({ featured: true, status: 'published', limit: 4 }),
         articlesAPI.list({ status: 'published', limit: 6 }),
-        articlesAPI.list({ status: 'published', limit: 5 }),
+        articlesAPI.list({ status: 'published', sort: 'popular', limit: 5 }),
         bannersAPI.list({ active: true }),
       ]);
 

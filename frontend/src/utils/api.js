@@ -26,11 +26,13 @@ export const authAPI = {
 
 export const articlesAPI = {
   list: (params) => api.get('/articles', { params }),
+  count: (params) => api.get('/articles/count', { params }),
   get: (id) => api.get(`/articles/${id}`),
   getBySlug: (slug) => api.get(`/articles/slug/${slug}`),
   create: (data) => api.post('/articles', data),
   update: (id, data) => api.put(`/articles/${id}`, data),
   delete: (id) => api.delete(`/articles/${id}`),
+  trackView: (id) => api.post(`/articles/${id}/view`),
 };
 
 export const usersAPI = {
@@ -66,4 +68,10 @@ export const uploadAPI = {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
+};
+
+export const mediaAPI = {
+  list: (params) => api.get('/media', { params }),
+  update: (filename, data) => api.patch(`/media/${filename}`, data),
+  delete: (filename) => api.delete(`/media/${filename}`),
 };

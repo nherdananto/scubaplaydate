@@ -16,6 +16,8 @@ import bcrypt
 import jwt
 from passlib.context import CryptContext
 import shutil
+from io import BytesIO
+from PIL import Image, ImageOps
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -82,6 +84,7 @@ class Article(BaseModel):
     seo_keywords: Optional[str] = None
     featured_image: Optional[str] = None
     related_articles: List[str] = Field(default_factory=list)
+    view_count: int = 0
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -236,6 +239,8 @@ async def list_articles(
     subcategory: Optional[str] = None,
     status: Optional[str] = None,
     featured: Optional[bool] = None,
+    sort: Optional[str] = None,
+    skip: int = 0,
     limit: int = 100
 ):
     query = {}
@@ -253,14 +258,40 @@ async def list_articles(
         query["status"] = status
     if featured is not None:
         query["featured"] = featured
-    
-    articles = await db.articles.find(query, {"_id": 0}).sort("created_at", -1).to_list(limit)
+
+    sort_field = "view_count" if sort == "popular" else "created_at"
+    cursor = db.articles.find(query, {"_id": 0}).sort(sort_field, -1).skip(skip).limit(limit)
+    articles = await cursor.to_list(limit)
     for a in articles:
         if isinstance(a.get("created_at"), str):
             a["created_at"] = datetime.fromisoformat(a["created_at"])
         if isinstance(a.get("updated_at"), str):
             a["updated_at"] = datetime.fromisoformat(a["updated_at"])
     return articles
+
+
+@api_router.get("/articles/count")
+async def count_articles(
+    category: Optional[str] = None,
+    status: Optional[str] = None,
+):
+    query = {}
+    if category:
+        query["category"] = category
+    if status:
+        query["status"] = status
+    total = await db.articles.count_documents(query)
+    return {"total": total}
+
+
+@api_router.post("/articles/{article_id}/view")
+async def track_article_view(article_id: str):
+    result = await db.articles.update_one(
+        {"id": article_id}, {"$inc": {"view_count": 1}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Article not found")
+    return {"ok": True}
 
 @api_router.get("/articles/{article_id}", response_model=Article)
 async def get_article(article_id: str):
@@ -392,18 +423,148 @@ async def upload_file(file: UploadFile = File(...), current_user: User = Depends
     file_ext = Path(file.filename).suffix.lower()
     if file_ext not in ALLOWED_IMAGE_EXTENSIONS:
         raise HTTPException(status_code=400, detail=f"File type not allowed. Allowed: {', '.join(ALLOWED_IMAGE_EXTENSIONS)}")
-    
+
     contents = await file.read()
     if len(contents) > MAX_FILE_SIZE:
         raise HTTPException(status_code=400, detail=f"File too large. Maximum size: {MAX_FILE_SIZE // (1024*1024)}MB")
-    
-    filename = f"{uuid.uuid4()}{file_ext}"
+
+    original_name = Path(file.filename).stem.lower()
+    safe_stem = re.sub(r"[^a-z0-9-]+", "-", original_name).strip("-")[:60] or "image"
+    short_id = uuid.uuid4().hex[:8]
+
+    # Optimize: open with Pillow, auto-rotate via EXIF, resize if larger than 1920px,
+    # convert to WebP (smaller + universally supported), strip metadata.
+    out_filename = f"{safe_stem}-{short_id}.webp"
+    out_path = UPLOAD_DIR / out_filename
+    try:
+        img = Image.open(BytesIO(contents))
+        img = ImageOps.exif_transpose(img)
+        if img.mode in ("RGBA", "LA", "P"):
+            background = Image.new("RGB", img.size, (255, 255, 255))
+            if img.mode == "P":
+                img = img.convert("RGBA")
+            background.paste(img, mask=img.split()[-1] if img.mode in ("RGBA", "LA") else None)
+            img = background
+        elif img.mode != "RGB":
+            img = img.convert("RGB")
+
+        max_dim = 1920
+        if img.width > max_dim or img.height > max_dim:
+            img.thumbnail((max_dim, max_dim), Image.LANCZOS)
+
+        img.save(out_path, format="WEBP", quality=82, method=6)
+        width, height = img.size
+        size_bytes = out_path.stat().st_size
+    except Exception:
+        # Fallback: store the original file as-is if Pillow can't process it
+        out_filename = f"{safe_stem}-{short_id}{file_ext}"
+        out_path = UPLOAD_DIR / out_filename
+        out_path.write_bytes(contents)
+        width = height = 0
+        size_bytes = len(contents)
+
+    public_url = f"/uploads/{out_filename}"
+
+    # Track in `media` collection so the CMS Media Library can list it
+    await db.media.insert_one({
+        "id": str(uuid.uuid4()),
+        "filename": out_filename,
+        "url": public_url,
+        "alt": "",
+        "width": width,
+        "height": height,
+        "size_bytes": size_bytes,
+        "in_gallery": False,
+        "uploaded_by": current_user.email,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    })
+
+    return {"url": public_url, "filename": out_filename, "width": width, "height": height}
+
+
+@api_router.get("/media")
+async def list_media(in_gallery: Optional[bool] = None, search: Optional[str] = None, limit: int = 200):
+    query = {}
+    if in_gallery is not None:
+        query["in_gallery"] = in_gallery
+    if search:
+        query["filename"] = {"$regex": re.escape(search), "$options": "i"}
+    items = await db.media.find(query, {"_id": 0}).sort("created_at", -1).to_list(limit)
+
+    # Reconcile: include any uploads that exist on disk but aren't tracked
+    # (legacy uploads from before the media collection existed).
+    if not in_gallery and not search:
+        tracked = {it["filename"] for it in items}
+        try:
+            for p in sorted(UPLOAD_DIR.iterdir(), key=lambda p: -p.stat().st_mtime):
+                if p.is_file() and p.name not in tracked:
+                    items.append({
+                        "id": p.name,  # synthetic id for legacy files
+                        "filename": p.name,
+                        "url": f"/uploads/{p.name}",
+                        "alt": "",
+                        "width": 0,
+                        "height": 0,
+                        "size_bytes": p.stat().st_size,
+                        "in_gallery": False,
+                        "uploaded_by": "legacy",
+                        "created_at": datetime.fromtimestamp(p.stat().st_mtime, tz=timezone.utc).isoformat(),
+                        "legacy": True,
+                    })
+        except FileNotFoundError:
+            pass
+    return items
+
+
+class MediaUpdate(BaseModel):
+    alt: Optional[str] = None
+    in_gallery: Optional[bool] = None
+
+
+@api_router.patch("/media/{filename}")
+async def update_media(filename: str, payload: MediaUpdate, _user: User = Depends(get_current_user)):
+    update: dict = {}
+    if payload.alt is not None:
+        update["alt"] = payload.alt
+    if payload.in_gallery is not None:
+        update["in_gallery"] = payload.in_gallery
+    if not update:
+        return {"ok": True}
+
+    # If this is a legacy file (not yet tracked), upsert into media collection
     file_path = UPLOAD_DIR / filename
-    
-    with file_path.open("wb") as buffer:
-        buffer.write(contents)
-    
-    return {"url": f"/uploads/{filename}", "filename": filename}
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="File not found")
+
+    existing = await db.media.find_one({"filename": filename})
+    if existing:
+        await db.media.update_one({"filename": filename}, {"$set": update})
+    else:
+        await db.media.insert_one({
+            "id": str(uuid.uuid4()),
+            "filename": filename,
+            "url": f"/uploads/{filename}",
+            "alt": update.get("alt", ""),
+            "width": 0,
+            "height": 0,
+            "size_bytes": file_path.stat().st_size,
+            "in_gallery": update.get("in_gallery", False),
+            "uploaded_by": "legacy",
+            "created_at": datetime.fromtimestamp(file_path.stat().st_mtime, tz=timezone.utc).isoformat(),
+        })
+    return {"ok": True}
+
+
+@api_router.delete("/media/{filename}")
+async def delete_media(filename: str, _admin: User = Depends(require_admin)):
+    file_path = UPLOAD_DIR / filename
+    if file_path.exists() and file_path.is_file():
+        try:
+            file_path.unlink()
+        except OSError:
+            pass
+    await db.media.delete_one({"filename": filename})
+    return {"ok": True}
 
 
 def _public_site_base(request: Request) -> str:

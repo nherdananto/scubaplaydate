@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingBag, Camera, GraduationCap, Users, Newspaper, MapPin, List, X } from '@phosphor-icons/react';
+import { ShoppingBag, Camera, GraduationCap, Users, Newspaper, MapPin, List, X, Image as ImageIcon } from '@phosphor-icons/react';
 import { settingsAPI } from '../utils/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import LanguageSwitcher from './LanguageSwitcher';
@@ -48,6 +48,7 @@ const Navbar = () => {
     { name: t('training'), path: '/training', icon: GraduationCap },
     { name: t('photography'), path: '/photography', icon: Camera },
     { name: t('community'), path: '/community', icon: Users },
+    { name: t('gallery') || 'Gallery', path: '/gallery', icon: ImageIcon },
   ];
 
   return (
